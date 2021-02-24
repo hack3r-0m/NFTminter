@@ -17,6 +17,10 @@ class App extends Component {
     const web3 = new Web3(window.ethereum)
     window.ethereum.enable()
 
+    const networkId = await web3.eth.net.getId()
+    this.setState({networkId: networkId})
+
+
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     this.contract = new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64") 
 
@@ -166,7 +170,9 @@ class App extends Component {
       <br/>
 
       {this.state.txnhash && this.state.done ? 
-          <a href={'https://explorer-mainnet.maticvigil.com/tx/' + this.state.txnhash} target="_blank">Txn Hash </a> 
+          this.state.networkId == 137 ? 
+                    <a href={'https://explorer-mainnet.maticvigil.com/tx/' + this.state.txnhash} target="_blank">Txn Hash </a> 
+                : <a href={'https://explorer-mumbai.maticvigil.com/tx/' + this.state.txnhash} target="_blank">Txn Hash </a>
           : null
       }
  
