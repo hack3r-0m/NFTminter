@@ -88,10 +88,8 @@ class App extends Component {
 
       const txnhash = await this.contract.methods.mintToCaller(this.state.account, 
                             'https://gateway.pinata.cloud/ipfs/' + this.state.ipfshash)
-                            .send({from: this.state.account}).on(
-                             'confirmation', function setter(){
+                            .send({from: this.state.account}).then(
                                 this.setState({done: true})
-                             }
                             )
       this.setState({txnhash: txnhash.transactionHash})
       console.log(this.state.txnhash)
