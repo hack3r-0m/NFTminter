@@ -9,22 +9,27 @@ import {pinJSONToIPFS, pinFileToIPFS} from './UploadMetaData'
 const abi = require('./abi.json')
 
 class App extends Component {
+
   componentWillMount() {
-    this.loadBlockchainData()
+    //this.loadBlockchainData()
   }
 
-  async loadBlockchainData() {
+  loadBlockchainData= async () =>  {
     const web3 = new Web3(window.ethereum)
-    window.ethereum.enable()
+    await window.ethereum.enable()
 
     const networkId = await web3.eth.net.getId()
     this.setState({networkId: networkId})
 
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    this.setState({ account: accounts[0] })
 
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     this.contract = new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64") 
 
-    this.setState({ account: accounts[0] })
+    if(web3){
+        this.setState({authorized: true})
+        console.log(this.state.authorized)
+    }
   }
     
   constructor(props) {
@@ -42,18 +47,24 @@ class App extends Component {
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.loadBlockchainData = this.loadBlockchainData.bind(this)
   }
 
   validateForm = () =>{
-  if (this.state.name == "" || this.state.description == "" || this.state.selectedFile == null ) {
-    alert("Please fill out the details properply");
-    return false;
+
+      if(this.state.name == "" || this.state.description == "" || this.state.selectedFile == null ) {
+        alert("Please fill out the details properply");
+        return false;
+        }
+      else if(!this.state.authorized){
+        alert("web3 provider is not connected")
+        return false;
+        }
+      else{
+        this.setState({submitted: true})
+        return true;
+        }
     }
-  else{
-    this.setState({submitted: true})
-    return true;
-    }
-  }
 
   handleInputChange(event) {
 
@@ -89,14 +100,18 @@ class App extends Component {
                 })
       this.setState({ipfshash: hashval})
 
-
       const txnhash = await this.contract.methods.mintToCaller(this.state.account, 
                             'https://gateway.pinata.cloud/ipfs/' + this.state.ipfshash)
                             .send({from: this.state.account}).then(
                                 this.setState({done: true})
                             )
-      this.setState({txnhash: txnhash.transactionHash})
-      console.log(this.state.txnhash)
+      if(this.state.done){
+        this.setState({txnhash: txnhash.transactionHash})
+        console.log(this.state.txnhash)
+      }
+      else{
+        this.setState({failed: true})
+      }
 
       
       return null
@@ -132,6 +147,10 @@ class App extends Component {
     </Navbar> 
      
     <div className="container">
+
+      <Button variant="primary" onClick={this.loadBlockchainData}>Connect to Web3</Button>
+      <br/><br/>
+      {this.state.authorized ? <p>{this.state.account}</p> : <p>web3 is not connected</p> }
 
       <Form name="myForm" onSubmit={this.handleSubmit}> 
 
@@ -169,6 +188,8 @@ class App extends Component {
 
       <br/>
 
+      {this.state.failed ? <Alert variant="danger"><p> Transaction Failed or cancelled </p> </Alert>: null }
+
       {this.state.txnhash && this.state.done ? 
           this.state.networkId == 137 ? 
                     <a href={'https://explorer-mainnet.maticvigil.com/tx/' + this.state.txnhash} target="_blank">Txn Hash </a> 
@@ -181,8 +202,6 @@ class App extends Component {
   </> 
     );
   }
-
-  
 
 }
 
