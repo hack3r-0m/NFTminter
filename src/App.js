@@ -211,13 +211,13 @@ class App extends Component {
      
     <div className="container">
 
-      <Button variant="primary" onClick={this.loadBlockchainData}>Connect to Web3</Button>
+      <Button variant="primary" className="float-right" onClick={this.loadBlockchainData}>Connect to Web3</Button>
       <br/><br/>
       {this.state.authorized ? 
           this.state.networkId == "137" || this.state.networkId == "80001" ? 
                 <p>{this.state.account}</p> 
-            : <p>Please change network to MATIC mainnet or Testnet and click "Connect To Web3"</p>
-        : <p>web3 is not connected</p> }
+            : <p className="float-right">Please change network to MATIC mainnet or Testnet and click "Connect To Web3"</p>
+        : <p className="float-right">web3 is not connected</p> }
 
       <Form name="myForm" onSubmit={this.handleSubmit}> 
 

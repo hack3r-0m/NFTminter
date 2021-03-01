@@ -7,8 +7,8 @@ export const pinJSONToIPFS = ( JSONBody ) => {
     return axios
         .post(url, JSONBody, {
             headers: {
-                pinata_api_key: "f9445edc1e659038580f",
-                pinata_secret_api_key:"88103f3a2572a20d9ccbbd251171a7c61fe1e78515072a74bdf7e34c5980f160" 
+                pinata_api_key: process.env.IPFS_API_KEY,
+                pinata_secret_api_key: process.env.IPFS_API_SECRET
             }
         })
         .then(function (response) {
@@ -32,8 +32,8 @@ export const pinFileToIPFS = (file) => {
             maxContentLength: 'Infinity', 
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-                pinata_api_key: "f9445edc1e659038580f",
-                pinata_secret_api_key:"88103f3a2572a20d9ccbbd251171a7c61fe1e78515072a74bdf7e34c5980f160"
+                pinata_api_key: process.env.IPFS_API_KEY,
+                pinata_secret_api_key: process.env.IPFS_API_SECRET
         }})
         .then(function (response) {
             const y = response.data.IpfsHash
