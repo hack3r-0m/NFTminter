@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next export"
   },
   "homepage": "https://github.com/AmanRaj1608/nextjs-web3-template",
   "license": "MIT",
