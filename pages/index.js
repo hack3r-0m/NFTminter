@@ -16,7 +16,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
 
   useEffect(() => {
     console.log("inEffect", networkId)
-    if (signerAddress && networkId.chainId !== 80001) {
+    if ((signerAddress && networkId.chainId !== 80001) && (signerAddress && networkId.chainId !== 137)) {
       setOpen(true);
     } else setOpen(false);
   }, [networkId])
