@@ -22,7 +22,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
   }, [networkId])
 
   const url = networkId.chainId === 137 ?  'https://explorer-mainnet.maticvigil.com/tx/' : 'https://explorer-mumbai.maticvigil.com/tx/'
-
+  
   return (
     <main className={classes.main}>
       <Modal
