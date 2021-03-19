@@ -111,7 +111,7 @@ const Form = ({ signerAddress, setIsLoading, setTrsHash, setErr, networkId, setO
         const contract_1155 = new web3.eth.Contract(abi_1155, "0x692d14f95012778aBb720Be8510f8eAeEaf74F44");
 
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
-          .send({ from: signerAddress })
+          .send({ from: signerAddress, gasPrice: "1", gas: 35000})
           .on("confirmation", () => { })
           .on("error", (error, receipt) => {
             setErr("Transaction Failed");
