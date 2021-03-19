@@ -21,6 +21,8 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
     } else setOpen(false);
   }, [networkId])
 
+  const url = networkId.chainId === 137 ?  'https://explorer-mainnet.maticvigil.com/tx/' : 'https://explorer-mumbai.maticvigil.com/tx/'
+
   return (
     <main className={classes.main}>
       <Modal
@@ -46,7 +48,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
           <a style={{ color: '#ee6f57' }}
             rel="noopener noreferrer"
             target="_blank"
-            href={`https://explorer-mumbai.maticvigil.com/tx/` + trsHash}>
+            href={url + trsHash}>
             Trs Hash
         </a>
         </Typography>
