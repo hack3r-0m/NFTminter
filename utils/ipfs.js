@@ -6,8 +6,8 @@ export const pinJSONToIPFS = (JSONBody) => {
   return axios
     .post(url, JSONBody, {
       headers: {
-        pinata_api_key: process.env.REACT_APP_IPFS_API_KEY,
-        pinata_secret_api_key: process.env.REACT_APP_IPFS_API_SECRET
+        pinata_api_key: process.env.IPFS_API_KEY,
+        pinata_secret_api_key: process.env.IPFS_API_SECRET
       }
     })
     .then(function (response) {
