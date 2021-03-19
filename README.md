@@ -7,6 +7,3 @@
 <h2 align="center">NFT Minter</h2>
 
 <p align="center"><b>🏗️ Mint ERC721 or ERC1155 standard tokens on Polygon (Previously Matic Network)</b></p>
-
->>>>>>> 708c71d92960f0e46eb4ef46c02c2fe69eecda2a
-Mint NFT on polygon at speed of light!
