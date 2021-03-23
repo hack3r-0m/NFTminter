@@ -2,19 +2,28 @@ import { useState } from 'react'
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import Arkane from "@arkane-network/web3-arkane-provider";
 
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
       infuraId: '196440d5d02d41dfa2a8ee5bfd2e96bd',
-    },
+    }
   },
+  arkane: {
+    package: Arkane,
+    options: {
+      clientId: "Polygon",
+      environment: "staging"
+    }
+  }
 };
 
 const web3Modal = new Web3Modal({
   network: "kovan",
   cacheProvider: true,
+  disableInjectedProvider: false
   providerOptions,
 });
 
