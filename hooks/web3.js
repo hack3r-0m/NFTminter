@@ -21,7 +21,6 @@ const providerOptions = {
         package: AK,
         options: {
             clientId: "Polygon",
-            environment: "staging",
             signMethod: 'POPUP',
             secretType: "MATIC"
 
