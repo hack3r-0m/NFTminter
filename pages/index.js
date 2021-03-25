@@ -16,13 +16,13 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
 
   useEffect(() => {
     console.log("inEffect", networkId)
-    if ((signerAddress && networkId.chainId !== 80001) && (signerAddress && networkId.chainId !== 137)) {
+    if ((signerAddress && networkId !== 80001) && (signerAddress && networkId !== 137)) {
       setOpen(true);
     } else setOpen(false);
   }, [networkId])
 
-  const url = networkId.chainId === 137 ? 'https://explorer-mainnet.maticvigil.com/tx/' : 'https://explorer-mumbai.maticvigil.com/tx/';
-
+  const url = networkId === 137 ?  'https://explorer-mainnet.maticvigil.com/tx/' : 'https://explorer-mumbai.maticvigil.com/tx/'
+  
   return (
     <main className={classes.main}>
       <Modal
@@ -33,7 +33,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
       >
         <div className={classes.paper}>
           <Typography variant="h6">
-            Your current Network is {networkId.name} (chain id {networkId.chainId}). Change it to Matic testnet 80001 or Matic mainnet 137.
+            Your current Network is {networkId.name} (chain id {networkId}). Change it to Matic testnet 80001 or Matic mainnet 137.
           </Typography>
         </div>
 

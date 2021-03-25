@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 toast.configure();
 
-const Form = ({ signerAddress, setIsLoading, setTrsHash, setErr, networkId, setOpen }) => {
+const Form = ({ signerAddress, contract_1155, contract_721, setIsLoading, setTrsHash, setErr, networkId, setOpen }) => {
   const classes = useStyles();
 
   // hooks
@@ -63,7 +63,7 @@ const Form = ({ signerAddress, setIsLoading, setTrsHash, setErr, networkId, setO
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (name && desc && file && signerAddress && (networkId.chainId === 80001 || networkId.chainId === 137)) {
+    if (name && desc && file && signerAddress && (networkId === 80001 || networkId === 137)) {
       setIsLoading(true);
       setErr('');
       setTrsHash('');
@@ -81,9 +81,6 @@ const Form = ({ signerAddress, setIsLoading, setTrsHash, setErr, networkId, setO
       console.log(ipfsHash)
 
       if (nftType === 'ERC721') {
-        const web3 = new Web3(window.ethereum)
-        const contract_721 = new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64");
-
         const txnhash = await contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash)
           .send({ from: signerAddress })
           .on("confirmation", (confirmationNumber, receipt) => { })
@@ -94,10 +91,7 @@ const Form = ({ signerAddress, setIsLoading, setTrsHash, setErr, networkId, setO
         setTrsHash(txnhash.transactionHash);
         console.log(txnhash.transactionHash);
 
-      } else if (nftType === 'ERC1155' && networkId.chainId === 80001) {
-        const web3 = new Web3(window.ethereum)
-        const contract_1155 = new web3.eth.Contract(abi_1155, "0x692d14f95012778aBb720Be8510f8eAeEaf74F44");
-
+      } else if (nftType === 'ERC1155' && networkId === 80001) {
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
           .send({ from: signerAddress })
           .on("confirmation", (confirmationNumber, receipt) => { })
@@ -106,12 +100,9 @@ const Form = ({ signerAddress, setIsLoading, setTrsHash, setErr, networkId, setO
         setTrsHash(txnhash.transactionHash);
         console.log(txnhash.transactionHash);
 
-      } else if (nftType === 'ERC1155' && networkId.chainId === 137) {
-        const web3 = new Web3(window.ethereum)
-        const contract_1155 = new web3.eth.Contract(abi_1155, "0x692d14f95012778aBb720Be8510f8eAeEaf74F44");
-
+      } else if (nftType === 'ERC1155' && networkId === 137) {
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
-          .send({ from: signerAddress, gasPrice: "1000000000", gas: 35000})
+          .send({ from: signerAddress, gasPrice: "1000000000", gas: 35000 })
           .on("confirmation", () => { })
           .on("error", (error, receipt) => {
             setErr("Transaction Failed");
@@ -126,7 +117,7 @@ const Form = ({ signerAddress, setIsLoading, setTrsHash, setErr, networkId, setO
     } else {
       validateName();
       validateDesc();
-      if (signerAddress && (networkId.chainId !== 80001 && networkId.chainId !== 137)) {
+      if (signerAddress && (networkId !== 80001 && networkId !== 137)) {
         setOpen(true);
         setErr("Wallet not found");
       } else
