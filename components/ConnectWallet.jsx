@@ -38,7 +38,6 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
       package: AK,
       options: {
           clientId: "Polygon",
-          environment: "staging",
           signMethod: 'POPUP',
           secretType: "MATIC"
 
