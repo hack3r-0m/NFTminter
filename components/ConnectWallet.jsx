@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Blockies from "react-blockies";
-import Web3Modal from "web3modal";
 import Web3 from "web3";
+import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import {Arkane as AK} from "@arkane-network/web3-arkane-provider";
 
 import { makeStyles } from '@material-ui/core/styles';
-
-// import { useWeb3Modal } from "../hooks/web3";
 
 const abi = require('../config/abi.json');
 const abi_1155 = require('../config/abi_1155.json');
@@ -40,7 +38,6 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
           clientId: "Polygon",
           signMethod: 'POPUP',
           secretType: "MATIC"
-
       },
       connector: async (AK, options) => {
           const provider = await AK.createArkaneProviderEngine(options);

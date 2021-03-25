@@ -6,6 +6,7 @@ import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Form from '../components/Form';
+import Success from '../components/Success';
 
 const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
   const classes = useStyles();
@@ -17,14 +18,14 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
   useEffect(() => {
     console.log("inEffect", networkId)
     if ((signerAddress && networkId !== 80001) && (signerAddress && networkId !== 137)) {
+      setErr('');
       setOpen(true);
     } else setOpen(false);
   }, [networkId])
 
-  const url = networkId === 137 ?  'https://explorer-mainnet.maticvigil.com/tx/' : 'https://explorer-mumbai.maticvigil.com/tx/'
-  
   return (
     <main className={classes.main}>
+      {/** Modal for Network Error */}
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -32,46 +33,42 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
         aria-describedby="simple-modal-description"
       >
         <div className={classes.paper}>
-          <Typography variant="h6">
-            Your current Network is {networkId.name} (chain id {networkId}). Change it to Matic testnet 80001 or Matic mainnet 137.
-          </Typography>
+          {
+            err ?
+              <Typography variant="h6" style={{ marginBottom: 15, color: 'tomato' }}>
+                Error: {err}
+              </Typography>
+              :
+              <Typography variant="h6">
+                Your current Network is {networkId.name} (chain id {networkId}). Change it to Matic testnet 80001 or Matic mainnet 137.
+            </Typography>
+          }
         </div>
-
       </Modal>
-      <div className={classes.title}>
-        <Typography variant="h3" style={{ marginBottom: 5 }}>NFT Minter</Typography>
-        <Typography variant="h6" style={{ opacity: 0.5 }}>Mint ERC721 or ERC1155 standard tokens on Polygon (Previously Matic Network) </Typography>
-      </div>
-      {
-        trsHash && <Typography variant="h6" style={{ marginBottom: 15 }}>
-          🎊 NFT minted 🎉{'  '}
-          <a style={{ color: '#ee6f57' }}
-            rel="noopener noreferrer"
-            target="_blank"
-            href={url + trsHash}>
-            Trs Hash
-        </a>
-        </Typography>
-      }
-      {
-        err && <Typography variant="h6" style={{ marginBottom: 15, color: 'tomato' }}>
-          🛑 Error: {'  ⚠️ '} {err}
-        </Typography>
-      }
       <div className={classes.cont}>
         {
-          isLoading ? <CircularProgress color="secondary" />
-            :
-            <Form
-              signerAddress={signerAddress}
-              contract_1155={contract_1155}
-              contract_721={contract_721}
-              setIsLoading={setIsLoading}
-              setTrsHash={setTrsHash}
-              setErr={setErr}
-              networkId={networkId}
-              setOpen={setOpen}
-            />
+          isLoading && <CircularProgress color="secondary" />
+        }
+        {
+          !trsHash && !isLoading &&
+          <Form
+            signerAddress={signerAddress}
+            contract_1155={contract_1155}
+            contract_721={contract_721}
+            setIsLoading={setIsLoading}
+            setTrsHash={setTrsHash}
+            setErr={setErr}
+            networkId={networkId}
+            setOpen={setOpen}
+          />
+        }
+        {
+          trsHash &&
+          <Success
+            trsHash={trsHash}
+            setTrsHash={setTrsHash}
+            networkId={networkId}
+          />
         }
       </div>
     </main>
@@ -81,9 +78,8 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
 const useStyles = makeStyles((theme) => ({
   main: {
     width: '100%',
-    margin: '0px auto',
+    margin: '10px auto',
     marginBottom: 20,
-    maxWidth: 1100,
     textAlign: 'center',
     [theme.breakpoints.down('xs')]: {
       marginTop: '20px'
@@ -103,18 +99,17 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 20
   },
   cont: {
-    maxWidth: 540,
-    margin: 'auto',
-    border: `1px solid ${theme.custom.palette.iconColor}`,
-    boxShadow: '2.5px 5px',
-    borderRadius: 8,
-    width: '100%',
-    // background: 'rgba(27, 27, 50, 0.1)',
-    // backgroundColor: 'rgb(183,192,238,0.1)',
+    maxWidth: 1300,
+    minHeight: 634,
     height: 'max-content',
-    padding: 20,
+    margin: 'auto',
+    padding: 40,
+    background: '#FFFFFF',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.08), 0px 8px 12px rgba(0, 0, 0, 0.04)',
+    borderRadius: 20,
     [theme.breakpoints.down('xs')]: {
-      width: '95%'
+      width: '100%',
+      padding: 10
     },
   }
 }));

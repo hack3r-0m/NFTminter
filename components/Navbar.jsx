@@ -3,21 +3,15 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import {
-  Brightness4Outlined as ToggleDarkModeIcon,
-  Brightness5Outlined as ToggleLightModeIcon,
-} from "@material-ui/icons/";
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import dynamic from "next/dynamic";
 const ConnectWallet = dynamic(() => import("./ConnectWallet"), {
   ssr: false,
 });
 
-const Navbar = ({ toggleMode, darkMode, signerAddress, contract_1155, contract_721, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
+const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
   const classes = useStyles();
-  const theme = useTheme();
 
   return (
     <AppBar position="static" className={classes.root}>
@@ -25,22 +19,19 @@ const Navbar = ({ toggleMode, darkMode, signerAddress, contract_1155, contract_7
         <img src="/logo.svg" alt="logo" className={classes.img} />
 
         <Typography variant="h6" className={classes.title}>
+          NFT Minter
         </Typography>
 
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="mode"
-          onClick={toggleMode}
-          className={classes.toggleBtn}
-        >
-          {darkMode ? <ToggleLightModeIcon htmlColor={theme.custom.palette.iconColor} /> : <ToggleDarkModeIcon htmlColor={theme.custom.palette.iconColor} />}
-        </IconButton>
+        <div className={classes.divider}></div>
+
+        <Typography variant="h6" className={classes.title2}>
+          Mint ERC721 or ERC1155 standard tokens on Polygon
+        </Typography>
+
+        <div className={classes.gap}></div>
 
         <ConnectWallet
           signerAddress={signerAddress}
-          contract_1155={contract_1155}
-          contract_721={contract_721}
           setContract_1155={setContract_1155}
           setContract_721={setContract_721}
           setSignerAddress={setSignerAddress}
@@ -55,26 +46,43 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     margin: 'auto',
-    maxWidth: 1100,
-    boxShadow: 'none'
+    backgroundColor: '#F8F9FA',
+    padding: '10px 70px',
+    boxShadow: 'none',
+    [theme.breakpoints.down('sm')]: {
+      padding: 10,
+    },
   },
   img: {
     width: 150,
     marginRight: 20
   },
   title: {
-    flexGrow: 1,
-    // color: '#784ffe',
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 0,
-      // display: 'none'
+    // fontFamily: 'Manrope',
+    fontWeight: 400,
+    fontSize: 22,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
     },
   },
-  toggleBtn: {
-    marginRight: 20,
-    [theme.breakpoints.down('xs')]: {
-      marginRight: 5,
+  divider: {
+    width: 36,
+    border: '0.9px solid #8247E5',
+    transform: 'rotate(90deg)',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
     },
+  },
+  title2: {
+    fontWeight: 'normal',
+    fontSize: 17,
+    color: '#061024',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    },
+  },
+  gap: {
+    flexGrow: 1,
   }
 }));
 
