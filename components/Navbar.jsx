@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     // fontFamily: 'Manrope',
     fontWeight: 400,
     fontSize: 22,
+    color: '#061024',
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     },
