@@ -84,7 +84,7 @@ const Form = ({ signerAddress, contract_1155, contract_721, setIsLoading, setTrs
       if (nftType === 'ERC721') {
         const txnhash = await contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash)
           .send({ from: signerAddress })
-          .on("confirmation", (confirmationNumber, receipt) => { })
+          .once("confirmation", (confirmationNumber, receipt) => { console.log(parseInt(receipt.events.Transfer.raw.topics[3])) })
           .on("error", (error, receipt) => {
             setErr("Transaction Failed")
           })
@@ -95,7 +95,7 @@ const Form = ({ signerAddress, contract_1155, contract_721, setIsLoading, setTrs
       } else if (nftType === 'ERC1155' && networkId === 80001) {
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
           .send({ from: signerAddress })
-          .on("confirmation", (confirmationNumber, receipt) => { })
+          .once("confirmation", (confirmationNumber, receipt) => { console.log(parseInt(receipt.events.Transfer.raw.topics[3])) })
           .on("error", () => setErr("Transaction Failed"))
 
         setTrsHash(txnhash.transactionHash);
@@ -103,8 +103,8 @@ const Form = ({ signerAddress, contract_1155, contract_721, setIsLoading, setTrs
 
       } else if (nftType === 'ERC1155' && networkId === 137) {
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
-          .send({ from: signerAddress, gasPrice: "1000000000", gas: 35000 })
-          .on("confirmation", () => { })
+          .send({ from: signerAddress })
+          .once("confirmation", (confirmationNumber, receipt) => { console.log(parseInt(receipt.events.Transfer.raw.topics[3])) })
           .on("error", (error, receipt) => {
             setErr("Transaction Failed");
           })

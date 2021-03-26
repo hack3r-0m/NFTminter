@@ -28,7 +28,7 @@ const Success = ({ networkId, trsHash, setTrsHash }) => {
       </Typography>
       <div className={classes.btnGrp}>
         <Button className={classes.view}>View on OpenSea</Button>
-        <Button className={classes.view}>View on Arkane</Button>
+        <Button href="https://arkane.market/inventory/MATIC/{contract_address}/{tokenID}" className={classes.view}>View on Arkane</Button>
       </div>
       <Button
         className={classes.more}
