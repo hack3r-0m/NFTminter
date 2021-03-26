@@ -20,6 +20,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
     if ((signerAddress && networkId !== 80001) && (signerAddress && networkId !== 137)) {
       setErr('');
       setOpen(true);
+      console.log("here")
     } else setOpen(false);
   }, [networkId])
 

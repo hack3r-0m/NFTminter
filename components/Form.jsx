@@ -44,15 +44,20 @@ const Form = ({ signerAddress, contract_1155, contract_721, setIsLoading, setTrs
   // handle file upload
   const handleFile = (e) => {
     // console.log("object")
-    setFile(e.target.files[0]);
-    // console.log(e.target.files[0])
-    // if (e.target.files.length !== 0) {
-    //   const reader = new FileReader();
-    //   reader.onload = e => {
-    //     setImgSrc(e.target.result);
-    //   };
-    //   reader.readAsDataURL(e.target.files[0]);
-    // }
+    if (e.target.files[0]?.size < 1e7) {
+      setFile(e.target.files[0]);
+      setErrors(pS => ({ ...pS, file: '' }))
+      // console.log(e.target.files[0]?.size < 1e7)
+      if (e.target.files.length !== 0) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          setImgSrc(e.target.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    } else {
+      setErrors(pS => ({ ...pS, file: 'File should be less than 10MB' }))
+    }
   }
 
 
@@ -116,7 +121,7 @@ const Form = ({ signerAddress, contract_1155, contract_721, setIsLoading, setTrs
       if (!signerAddress) {
         setOpen(true);
         setErr("Connect to wallet first");
-      } else if(networkId !== 80001 && networkId !== 137) {
+      } else if (networkId !== 80001 && networkId !== 137) {
         setOpen(true);
         setErr("");
       } else {
@@ -132,21 +137,36 @@ const Form = ({ signerAddress, contract_1155, contract_721, setIsLoading, setTrs
 
       {/* Left Container */}
       <div className={classes.uploadContainer}>
-        <div className={classes.uploadContainerCenter}>
-          <img src="img/upload.svg" alt="upload" />
-          <Typography variant="h6" className={classes.uploadTitle}>
-            Upload your file here
-          </Typography>
-          <Typography variant="h6" className={classes.uploadTitle2}>
-            JPG, PNG, or MP4 videos accepted.
-            10MB limit.
-          </Typography>
+        <div style={{ margin: imgSrc ? '50px 0px' : '25% auto' }}>
+          {
+            imgSrc ?
+              <div><img src={imgSrc} className={classes.previewImg} alt="preview-img" /></div>
+              :
+              <img src="img/upload.svg" alt="upload" />
+          }
+          {
+            !imgSrc &&
+            <React.Fragment>
+              <Typography variant="h6" className={classes.uploadTitle}>
+                Upload your file here
+              </Typography>
+              <Typography variant="h6" className={classes.uploadTitle2}>
+                JPG, PNG, or MP4 videos accepted.
+                10MB limit.
+              </Typography>
+            </React.Fragment>
+          }
           <input accept="audio/*,video/*,image/*" id="upload-file" onChange={handleFile} type='file' hidden />
           <label htmlFor="upload-file">
             <Button component="span" className={classes.uploadBtn}>
               {file ? file.name : 'Click to upload'}
             </Button>
           </label>
+          {errors.file &&
+            <Typography variant="h6" className={classes.errUpload}>
+              {errors.file}
+            </Typography>
+          }
         </div>
       </div>
 
@@ -261,11 +281,18 @@ const useStyles = makeStyles((theme) => ({
       height: 'max-content',
     },
   },
-  uploadContainerCenter: {
-    margin: '25% auto',
-    [theme.breakpoints.down('md')]: {
-      margin: 20,
-    },
+  // uploadContainerCenter: {
+  //   margin: '25% auto',
+  //   [theme.breakpoints.down('md')]: {
+  //     margin: 20,
+  //   },
+  // },
+  previewImg: {
+    maxWidth: 400,
+    maxHeight: 400,
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain'
   },
   uploadTitle: {
     fontSize: 18,
@@ -285,10 +312,18 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     color: '#FFFFFF',
     borderRadius: 37,
-    marginTop: 10,
+    margin: '20px auto',
     '&:hover': {
       background: '#061024',
     }
+  },
+  errUpload: {
+    maxWidth: 300,
+    textAlign: 'center',
+    margin: 'auto',
+    color: 'tomato',
+    fontSize: 16,
+    fontWeight: 400,
   },
   // uploadBtnName: {
   //   overflow: 'hidden',
