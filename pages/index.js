@@ -12,6 +12,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [trsHash, setTrsHash] = useState('');
+  const [arkaneUrl, setArkaneUrl] = useState('');
   const [err, setErr] = useState('')
   const [open, setOpen] = React.useState(false);
 
@@ -61,6 +62,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
             setErr={setErr}
             networkId={networkId}
             setOpen={setOpen}
+            setArkaneUrl={setArkaneUrl}
           />
         }
         {
@@ -69,6 +71,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
             trsHash={trsHash}
             setTrsHash={setTrsHash}
             networkId={networkId}
+            arkaneUrl={arkaneUrl}
           />
         }
       </div>
