@@ -71,25 +71,28 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
   }
 
   const getAddress = async () => {
-    let web3 = provider;
-    const accounts = await web3.eth.getAccounts();
-    setSignerAddress(accounts[0]);
+    if (provider) {
+      let web3 = provider;
+      const accounts = await web3.eth.getAccounts();
+      setSignerAddress(accounts[0]);
 
-    const networkId = await web3.eth.net.getId();
-    // console.log(networkId)
-    setNetworkId(networkId);
+      const networkId = await web3.eth.net.getId();
+      // console.log(networkId)
+      setNetworkId(networkId);
 
-    // for erc721 mainnet and testnet
-    setContract_721(new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64"));
-    // for erc1155 mainnet
-    if (networkId == "137") setContract_1155(new web3.eth.Contract(abi_1155, "0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639"));
-    // for erc1155 testnet
-    else setContract_1155(new web3.eth.Contract(abi_1155, "0x692d14f95012778aBb720Be8510f8eAeEaf74F44"));
+      // for erc721 mainnet and testnet
+      setContract_721(new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64"));
+      // for erc1155 mainnet
+      if (networkId == "137") setContract_1155(new web3.eth.Contract(abi_1155, "0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639"));
+      // for erc1155 testnet
+      else setContract_1155(new web3.eth.Contract(abi_1155, "0x692d14f95012778aBb720Be8510f8eAeEaf74F44"));
+    } else {
+      setSignerAddress("");
+    }
   }
 
   useEffect(() => {
-    if (provider) getAddress();
-    else setSignerAddress("");
+    getAddress();
   }, [provider]);
 
   checkNetwork(getAddress, 1000);

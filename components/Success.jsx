@@ -11,7 +11,6 @@ const Success = ({ networkId, trsHash, setTrsHash }) => {
 
   return (
     <div className={classes.root}>
-      {console.log(url + trsHash)}
       <img src="img/congratulation.svg" alt="success" />
       <Typography variant="h6" className={classes.title}>
         Congratulation
