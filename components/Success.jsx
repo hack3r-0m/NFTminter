@@ -29,7 +29,7 @@ const Success = ({ networkId, trsHash, setTrsHash, arkaneUrl }) => {
       <div className={classes.btnGrp}>
         {/* <Button className={classes.view}>View on OpenSea</Button> */}
         {
-          networkId === 137 &&
+          networkId === 137 && arkaneUrl &&
           <Button
             href={`https://arkane.market/inventory/MATIC/${arkaneUrl}`}
             target="_blank"
