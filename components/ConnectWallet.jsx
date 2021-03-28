@@ -38,8 +38,8 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
       package: AK,
       options: {
         clientId: "Polygon",
-        signMethod: 'POPUP',
         secretType: "MATIC"
+
       },
       connector: async (AK, options) => {
         const provider = await AK.createArkaneProviderEngine(options);

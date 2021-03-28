@@ -117,13 +117,16 @@ const Form = ({
         toast("NFT Minted", { type: "success" });
 
       } else if (nftType === 'ERC1155' && networkId === 80001) {
+        contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
           .send({ from: signerAddress })
           .once("confirmation", (confirmationNumber, receipt) => {
-            console.log('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.Transfer.raw.topics[3]))
-            setArkaneUrl('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.Transfer.raw.topics[3]));
+              console.log(receipt)
+              console.log('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
+              setArkaneUrl('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
           })
-          .on("error", () => {
+          .on("error", (error) => {
+            console.log(error)
             setOpen(true);
             setErr('Transaction failed');
             setIsLoading(false);
@@ -133,13 +136,15 @@ const Form = ({
         toast("NFT Minted", { type: "success" });
 
       } else if (nftType === 'ERC1155' && networkId === 137) {
+        contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
           .send({ from: signerAddress })
           .once("confirmation", (confirmationNumber, receipt) => {
-            console.log('0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639/' + parseInt(receipt.events.Transfer.raw.topics[3]))
-            setArkaneUrl('0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639/' + parseInt(receipt.events.Transfer.raw.topics[3]));
+            console.log('0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
+            setArkaneUrl('0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
           })
-          .on("error", () => {
+          .on("error", (error) => {
+            console.log(error)
             setOpen(true);
             setErr('Transaction failed');
             setIsLoading(false);
