@@ -121,9 +121,9 @@ const Form = ({
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
           .send({ from: signerAddress })
           .once("confirmation", (confirmationNumber, receipt) => {
-              console.log(receipt)
-              console.log('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
-              setArkaneUrl('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
+            console.log(receipt)
+            console.log('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
+            setArkaneUrl('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
           })
           .on("error", (error) => {
             console.log(error)
@@ -294,8 +294,13 @@ const Form = ({
             onChange={(e) => setSurl(e.target.value)}
           />
         </div>
-
-        <Button type="submit" className={classes.submit}>Submit</Button>
+        <div className={classes.lastSec}>
+          <div className={classes.note}>
+            Once your NFT is minted on the Polygon blockchain, you will not
+            be able to edit or update any of its information.
+          </div>
+          <Button type="submit" className={classes.submit}>Submit</Button>
+        </div>
       </div>
 
     </form>
@@ -453,13 +458,29 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
     }
   },
+  lastSec: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      display: 'block',
+      margin: '30px 0'
+    },
+  },
+  note: {
+    color: '#6E798F',
+    maxWidth: 370,
+    margin: 'auto 0',
+    [theme.breakpoints.down('md')]: {
+      margin: 'auto',
+      marginBottom: 20
+    },
+  },
   submit: {
     background: '#8247E5',
-    padding: '15px 24px',
+    padding: '11px 30px',
     fontSize: 16,
     color: '#FFFFFF',
     borderRadius: 37,
-    marginTop: 10,
     '&:hover': {
       background: '#8247E5',
     }
