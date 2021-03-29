@@ -5,10 +5,14 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Arkane as AK } from "@arkane-network/web3-arkane-provider";
 
+import { Biconomy } from "@biconomy/mexa";
+
 import { makeStyles } from '@material-ui/core/styles';
 
 const abi = require('../config/abi.json');
 const abi_1155 = require('../config/abi_1155.json');
+const abi_erc721_biconomy = require('../config/abi721-biconomy.json');
+const abi_erc1155_biconomy = require('../config/abi1155-biconomy.json'); 
 
 import checkNetwork from '../hooks/checkNetwork';
 
@@ -62,9 +66,21 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
   async function connectWallet() {
     try {
       const externalProvider = await web3Modal.connect();
-      let w3 = new Web3(externalProvider)
+      const biconomy = new Biconomy(externalProvider,{
+            apiKey: "Oq8qKcYSn.af394cef-ab29-412d-bbf6-0aebb3066104"
+          });
 
-      setProvider(w3);
+      biconomy.onEvent(biconomy.READY, () => {
+
+        let w3 = new Web3(biconomy);
+        setProvider(w3);
+        console.log("initialized")
+
+    }).onEvent(biconomy.ERROR, (error, message) => {
+        console.log(error);
+        console.log(message);
+    });
+
     } catch (e) {
       console.log('NO_WALLET_CONNECTED', e);
     }
@@ -80,12 +96,13 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
       // console.log(networkId)
       setNetworkId(networkId);
 
-      // for erc721 mainnet and testnet
-      setContract_721(new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64"));
-      // for erc1155 mainnet
-      if (networkId == "137") setContract_1155(new web3.eth.Contract(abi_1155, "0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639"));
-      // for erc1155 testnet
+      if (networkId == "137") setContract_721(new web3.eth.Contract(abi_erc721_biconomy, "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9"));
+      else setContract_721(new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64"));
+
+      if (networkId == "137") setContract_1155(new web3.eth.Contract(abi_erc1155_biconomy, "0xfd1dBD4114550A867cA46049C346B6cD452ec919"));
       else setContract_1155(new web3.eth.Contract(abi_1155, "0x692d14f95012778aBb720Be8510f8eAeEaf74F44"));
+
+
     } else {
       setSignerAddress("");
     }
