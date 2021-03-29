@@ -100,14 +100,32 @@ const Form = ({
       }
 
       // Make transaction as per network
-      if (nftType === 'ERC721') {
+      if (nftType === 'ERC721' && networkId === 80001) {
         const txnhash = await contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash)
           .send({ from: signerAddress })
           .once("confirmation", (confirmationNumber, receipt) => {
             console.log('0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64/' + parseInt(receipt.events.Transfer.raw.topics[3]))
             setArkaneUrl('0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64/' + parseInt(receipt.events.Transfer.raw.topics[3]));
           })
-          .on("error", () => {
+          .on("error", (error) => {
+            console.log(error)
+            setOpen(true);
+            setErr('Transaction failed');
+            setIsLoading(false);
+          })
+        setTrsHash(txnhash.transactionHash);
+        console.log(txnhash.transactionHash);
+        toast("NFT Minted", { type: "success" });
+
+      } else if (nftType === 'ERC721' && networkId === 137) {
+        const txnhash = await contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash)
+          .send({ from: signerAddress })
+          .once("confirmation", (confirmationNumber, receipt) => {
+            console.log('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]))
+            setArkaneUrl('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]));
+          })
+          .on("error", (error) => {
+            console.log(error)
             setOpen(true);
             setErr('Transaction failed');
             setIsLoading(false);
@@ -140,8 +158,8 @@ const Form = ({
         const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
           .send({ from: signerAddress })
           .once("confirmation", (confirmationNumber, receipt) => {
-            console.log('0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
-            setArkaneUrl('0xd52a86110c9a7597a057Ae2bB4F577B6CD42a639/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
+            console.log('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
+            setArkaneUrl('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
           })
           .on("error", (error) => {
             console.log(error)
@@ -153,7 +171,9 @@ const Form = ({
         console.log(txnhash.transactionHash);
         toast("NFT Minted", { type: "success" });
       }
+
       setIsLoading(false);
+
     } else {
       validateName();
       validateDesc();
