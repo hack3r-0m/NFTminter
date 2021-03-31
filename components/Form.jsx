@@ -154,9 +154,9 @@ const Form = ({
                 setIsLoading(false);
               })
             //console.log(tx)
+            toast("NFT Minted", { type: "success" });
           }
         )
-        toast("NFT Minted", { type: "success" });
 
       } else if (nftType === 'ERC1155') {
         console.log(web3)
