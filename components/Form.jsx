@@ -3,6 +3,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { domainType, metaTransactionType, domainData721, domainData1155 } from '../utils/biconomy-vars';
+import { getSignatureParameters, web3 } from './ConnectWallet';
+
 import { pinJSONToIPFS, pinFileToIPFS, encodedParams } from '../utils/ipfs';
 
 import { toast } from "react-toastify";
@@ -71,6 +74,7 @@ const Form = ({
   }
 
 
+
   const onSubmit = async (e) => {
     e.preventDefault();
     // if all req fields are avaialable
@@ -99,98 +103,137 @@ const Form = ({
         setErr('Uploading files on IPFS failed');
       }
 
-      // Make transaction as per network
-      if (nftType === 'ERC721' && networkId === 80001) {
-        const txnhash = await contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash)
-          .send({ from: signerAddress })
-          .once("confirmation", (confirmationNumber, receipt) => {
-            console.log('0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64/' + parseInt(receipt.events.Transfer.raw.topics[3]))
-            setArkaneUrl('0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64/' + parseInt(receipt.events.Transfer.raw.topics[3]));
-          })
-          .on("error", (error) => {
-            console.log(error)
-            setOpen(true);
-            setErr('Transaction failed');
-            setIsLoading(false);
-          })
-        setTrsHash(txnhash.transactionHash);
-        console.log(txnhash.transactionHash);
+      if (nftType === 'ERC721') {
+
+        let nonce = await contract_721.methods.getNonce(signerAddress).call();
+        let functionSignature = contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash).encodeABI();
+
+        let message = {};
+        message.nonce = parseInt(nonce);
+        message.from = signerAddress;
+        message.functionSignature = functionSignature;
+
+        const dataToSign = JSON.stringify({
+          types: {
+            EIP712Domain: domainType,
+            MetaTransaction: metaTransactionType
+          },
+          domain: domainData721,
+          primaryType: "MetaTransaction",
+          message: message
+        });
+
+        const rpc = {
+          jsonrpc: "2.0",
+          id: 999999999999,
+          method: "eth_signTypedData_v4",
+          params: [signerAddress, dataToSign]
+        }
+
+        const txnhash = await web3.currentProvider.sendAsync(
+          rpc,
+          async function (error, response) {
+
+            //console.log(response)
+            let { r, s, v } = getSignatureParameters(response.result);
+
+            const tx = await contract_721.methods.executeMetaTransaction(signerAddress,
+              functionSignature, r, s, v)
+              .send({ from: signerAddress })
+              .once("confirmation", (confirmationNumber, receipt) => {
+                //console.log(confirmationNumber)
+                //console.log(receipt)
+                console.log('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]));
+                setArkaneUrl('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]));
+                setTrsHash(receipt.transactionHash);
+              })
+              .on("error", (error) => {
+                console.log(error)
+                setOpen(true);
+                setErr('Transaction failed');
+                setIsLoading(false);
+              })
+            //console.log(tx)
+          }
+        )
         toast("NFT Minted", { type: "success" });
 
-      } else if (nftType === 'ERC721' && networkId === 137) {
-        const txnhash = await contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash)
-          .send({ from: signerAddress })
-          .once("confirmation", (confirmationNumber, receipt) => {
-            console.log('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]))
-            setArkaneUrl('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]));
-          })
-          .on("error", (error) => {
-            console.log(error)
-            setOpen(true);
-            setErr('Transaction failed');
-            setIsLoading(false);
-          })
-        setTrsHash(txnhash.transactionHash);
-        console.log(txnhash.transactionHash);
-        toast("NFT Minted", { type: "success" });
-
-      } else if (nftType === 'ERC1155' && networkId === 80001) {
+      } else if (nftType === 'ERC1155') {
+        console.log(web3)
         contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
-        const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
-          .send({ from: signerAddress })
-          .once("confirmation", (confirmationNumber, receipt) => {
-              console.log(receipt)
-              console.log('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
-              setArkaneUrl('0x692d14f95012778aBb720Be8510f8eAeEaf74F44/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
-          })
-          .on("error", (error) => {
-            console.log(error)
-            setOpen(true);
-            setErr('Transaction failed');
-            setIsLoading(false);
-          })
-        setTrsHash(txnhash.transactionHash);
-        console.log(txnhash.transactionHash);
-        toast("NFT Minted", { type: "success" });
 
-      } else if (nftType === 'ERC1155' && networkId === 137) {
-        contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
-        const txnhash = await contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
-          .send({ from: signerAddress })
-          .once("confirmation", (confirmationNumber, receipt) => {
-            console.log('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]))
-            setArkaneUrl('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
-          })
-          .on("error", (error) => {
-            console.log(error)
-            setOpen(true);
-            setErr('Transaction failed');
-            setIsLoading(false);
-          })
-        setTrsHash(txnhash.transactionHash);
-        console.log(txnhash.transactionHash);
-        toast("NFT Minted", { type: "success" });
-      }
+        let nonce = await contract_1155.methods.getNonce(signerAddress).call();
+        let functionSignature = contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash).encodeABI();
 
-      setIsLoading(false);
+        let message = {};
+        message.nonce = parseInt(nonce);
+        message.from = signerAddress;
+        message.functionSignature = functionSignature;
 
-    } else {
-      validateName();
-      validateDesc();
-      if (!signerAddress) {
-        setOpen(true);
-        setErr("Connect to wallet first");
-      } else if (networkId !== 80001 && networkId !== 137) {
-        setOpen(true);
-        setErr("");
+        const dataToSign = JSON.stringify({
+          types: {
+            EIP712Domain: domainType,
+            MetaTransaction: metaTransactionType
+          },
+          domain: domainData1155,
+          primaryType: "MetaTransaction",
+          message: message
+        });
+
+        const rpc = {
+          jsonrpc: "2.0",
+          id: 999999999999,
+          method: "eth_signTypedData_v4",
+          params: [signerAddress, dataToSign]
+        }
+
+        const txnhash = web3.currentProvider.sendAsync(
+          rpc,
+          async function (error, response) {
+
+            console.log(response)
+            let { r, s, v } = getSignatureParameters(response.result);
+
+
+            const tx = contract_1155.methods.executeMetaTransaction(signerAddress,
+              functionSignature, r, s, v)
+              .send({ from: signerAddress })
+              .once("confirmation", (confirmationNumber, receipt) => {
+                //console.log(confirmationNumber)
+                //console.log(receipt)
+                console.log('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
+                setArkaneUrl('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
+                setTrsHash(receipt.transactionHash);
+              })
+              .on("error", (error) => {
+                console.log(error)
+                setOpen(true);
+                setErr('Transaction failed');
+                setIsLoading(false);
+              })
+            // console.log(tx)
+            toast("NFT Minted", { type: "success" });
+          }
+        )
+
+
       } else {
-        setOpen(true);
-        setErr("Enter all mandatory fields");
+        validateName();
+        validateDesc();
+        if (!signerAddress) {
+          setOpen(true);
+          setErr("Connect to wallet first");
+        } else if (networkId !== 80001 && networkId !== 137) {
+          setOpen(true);
+          setErr("");
+        } else {
+          setOpen(true);
+          setErr("Enter all mandatory fields");
+        }
       }
     }
+
   }
-
-
   return (
     <form className={classes.root} noValidate autoComplete="off" onSubmit={onSubmit}>
 

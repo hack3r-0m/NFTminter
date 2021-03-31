@@ -12,9 +12,11 @@ import { makeStyles } from '@material-ui/core/styles';
 const abi = require('../config/abi.json');
 const abi_1155 = require('../config/abi_1155.json');
 const abi_erc721_biconomy = require('../config/abi721-biconomy.json');
-const abi_erc1155_biconomy = require('../config/abi1155-biconomy.json'); 
+const abi_erc1155_biconomy = require('../config/abi1155-biconomy.json');
 
 import checkNetwork from '../hooks/checkNetwork';
+
+var web3;
 
 const truncateAddress = (address) => {
   return address.slice(0, 6) + "..." + address.slice(-4);
@@ -24,6 +26,7 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
   const classes = useStyles();
   // const [isWaiting, setWaiting] = useState(false)
   const [provider, setProvider] = useState(undefined);
+  const [biconomyProvider, setBiconomyProvider] = useState(undefined);
 
   const providerOptions = {
     walletconnect: {
@@ -66,20 +69,21 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
   async function connectWallet() {
     try {
       const externalProvider = await web3Modal.connect();
-      const biconomy = new Biconomy(externalProvider,{
-            apiKey: "Oq8qKcYSn.af394cef-ab29-412d-bbf6-0aebb3066104"
-          });
+
+      const biconomy = new Biconomy(new Web3.providers.HttpProvider("https://rpc-mainnet.matic.network")
+        , { apiKey: "Oq8qKcYSn.af394cef-ab29-412d-bbf6-0aebb3066104", debug: true });
+      setBiconomyProvider(new Web3(biconomy));
+
+      let w3 = new Web3(externalProvider);
+      setProvider(w3);
 
       biconomy.onEvent(biconomy.READY, () => {
-
-        let w3 = new Web3(biconomy);
-        setProvider(w3);
         console.log("initialized")
 
-    }).onEvent(biconomy.ERROR, (error, message) => {
+      }).onEvent(biconomy.ERROR, (error, message) => {
         console.log(error);
         console.log(message);
-    });
+      });
 
     } catch (e) {
       console.log('NO_WALLET_CONNECTED', e);
@@ -87,21 +91,18 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
   }
 
   const getAddress = async () => {
-    if (provider) {
-      let web3 = provider;
+    if (provider && biconomyProvider) {
+      web3 = provider;
+
       const accounts = await web3.eth.getAccounts();
       setSignerAddress(accounts[0]);
+
+      setContract_721(new biconomyProvider.eth.Contract(abi_erc721_biconomy, "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9"));
+      setContract_1155(new biconomyProvider.eth.Contract(abi_erc1155_biconomy, "0xfd1dBD4114550A867cA46049C346B6cD452ec919"));
 
       const networkId = await web3.eth.net.getId();
       // console.log(networkId)
       setNetworkId(networkId);
-
-      if (networkId == "137") setContract_721(new web3.eth.Contract(abi_erc721_biconomy, "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9"));
-      else setContract_721(new web3.eth.Contract(abi, "0xD05a795d339886bB8Dd46cfe2ac009d7f1E48A64"));
-
-      if (networkId == "137") setContract_1155(new web3.eth.Contract(abi_erc1155_biconomy, "0xfd1dBD4114550A867cA46049C346B6cD452ec919"));
-      else setContract_1155(new web3.eth.Contract(abi_1155, "0x692d14f95012778aBb720Be8510f8eAeEaf74F44"));
-
 
     } else {
       setSignerAddress("");
@@ -140,6 +141,25 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
   );
 }
 
+export const getSignatureParameters = signature => {
+  console.log(signature)
+  if (!Web3.utils.isHexStrict(signature)) {
+    throw new Error(
+      'Given value "'.concat(signature, '" is not a valid hex string.')
+    );
+  }
+  var r = signature.slice(0, 66);
+  var s = "0x".concat(signature.slice(66, 130));
+  var v = "0x".concat(signature.slice(130, 132));
+  v = Web3.utils.hexToNumber(v);
+  if (![27, 28].includes(v)) v += 27;
+  return {
+    r: r,
+    s: s,
+    v: v
+  };
+};
+
 const useStyles = makeStyles((theme) => ({
   btn: {
     background: 'rgb(183,192,238)',
@@ -158,3 +178,4 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default ConnectWallet;
+export { web3 };
