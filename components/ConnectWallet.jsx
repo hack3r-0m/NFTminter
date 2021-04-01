@@ -9,8 +9,8 @@ import { Biconomy } from "@biconomy/mexa";
 
 import { makeStyles } from '@material-ui/core/styles';
 
-const abi = require('../config/abi.json');
-const abi_1155 = require('../config/abi_1155.json');
+// const abi = require('../config/abi.json');
+// const abi_1155 = require('../config/abi_1155.json');
 const abi_erc721_biconomy = require('../config/abi721-biconomy.json');
 const abi_erc1155_biconomy = require('../config/abi1155-biconomy.json');
 
