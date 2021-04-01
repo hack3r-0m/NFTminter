@@ -18,10 +18,9 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
 
   useEffect(() => {
     console.log("inEffect", networkId)
-    if ((signerAddress && networkId !== 80001) && (signerAddress && networkId !== 137)) {
+    if (signerAddress && networkId !== 137) {
       setErr('');
       setOpen(true);
-      console.log("here")
     } else setOpen(false);
   }, [networkId])
 
@@ -42,8 +41,8 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
               </Typography>
               :
               <Typography variant="h6">
-                Your current Network is {networkId.name} (chain id {networkId}). Change it to Matic testnet 80001 or Matic mainnet 137.
-            </Typography>
+                Your current Network Id is {networkId}. Change it to Matic Mainnet 137.
+              </Typography>
           }
         </div>
       </Modal>

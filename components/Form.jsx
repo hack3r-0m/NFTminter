@@ -133,7 +133,6 @@ const Form = ({
         const txnhash = await web3.currentProvider.sendAsync(
           rpc,
           async function (error, response) {
-
             //console.log(response)
             let { r, s, v } = getSignatureParameters(response.result);
 
@@ -151,13 +150,12 @@ const Form = ({
                 console.log(error)
                 setOpen(true);
                 setErr('Transaction failed');
-                setIsLoading(false);
               })
             //console.log(tx)
+            setIsLoading(false);
             toast("NFT Minted", { type: "success" });
           }
         )
-
       } else if (nftType === 'ERC1155') {
         console.log(web3)
         contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
@@ -190,10 +188,8 @@ const Form = ({
         const txnhash = web3.currentProvider.sendAsync(
           rpc,
           async function (error, response) {
-
             console.log(response)
             let { r, s, v } = getSignatureParameters(response.result);
-
 
             const tx = contract_1155.methods.executeMetaTransaction(signerAddress,
               functionSignature, r, s, v)
@@ -209,14 +205,12 @@ const Form = ({
                 console.log(error)
                 setOpen(true);
                 setErr('Transaction failed');
-                setIsLoading(false);
               })
             // console.log(tx)
+            setIsLoading(false);
             toast("NFT Minted", { type: "success" });
           }
         )
-
-
       } else {
         validateName();
         validateDesc();
@@ -232,8 +226,8 @@ const Form = ({
         }
       }
     }
-
   }
+
   return (
     <form className={classes.root} noValidate autoComplete="off" onSubmit={onSubmit}>
 
