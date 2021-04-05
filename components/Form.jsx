@@ -104,8 +104,6 @@ const Form = ({
       }
 
       if (nftType === 'ERC721') {
-        //add this if a popup blocker is being triggered
-        window.Arkane.arkaneConnect().createSigner();
 
         let nonce = await contract_721.methods.getNonce(signerAddress).call();
         let functionSignature = contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash).encodeABI();
@@ -159,10 +157,7 @@ const Form = ({
           }
         )
       } else if (nftType === 'ERC1155') {
-        //add this if a popup blocker is being triggered
-        window.Arkane.arkaneConnect().createSigner();
-
-        console.log(web3)
+        
         contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
 
         let nonce = await contract_1155.methods.getNonce(signerAddress).call();
