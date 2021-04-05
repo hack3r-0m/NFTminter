@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,8 +16,12 @@ const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAdd
 
   return (
     <AppBar position="static" className={classes.root}>
-      <Toolbar>
-        <img src="/logo.svg" alt="logo" className={classes.img} />
+      <Toolbar className={classes.rootTool}>
+        <Link href="/">
+          <a>
+            <img src="/logo.svg" alt="logo" className={classes.img} />
+          </a>
+        </Link>
 
         <Typography variant="h6" className={classes.title}>
           NFT Minter
@@ -25,11 +30,16 @@ const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAdd
         <div className={classes.divider}></div>
 
         <Typography variant="h6" className={classes.title2}>
-          Mint ERC721 or ERC1155 standard tokens on Polygon
+          Mint NFTs for free on Polygon
         </Typography>
 
         <div className={classes.gap}></div>
 
+        <div className={classes.social}>
+          <a href="https://discord.gg/ZnakscDVGe" target="_blank" rel="noopener noreferrer">
+            <img src="/img/discord.svg" className={classes.socialImg} />
+          </a>
+        </div>
         <ConnectWallet
           signerAddress={signerAddress}
           setContract_1155={setContract_1155}
@@ -49,13 +59,21 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#F8F9FA',
     padding: '10px 70px',
     boxShadow: 'none',
-    [theme.breakpoints.down('sm')]: {
-      padding: 10,
+    [theme.breakpoints.down('xs')]: {
+      padding: '10px 0px',
+    },
+  },
+  rootTool: {
+    [theme.breakpoints.down('xs')]: {
+      padding: '0px 5px',
     },
   },
   img: {
     width: 150,
-    marginRight: 20
+    marginRight: 20,
+    [theme.breakpoints.down('xs')]: {
+      width: 130,
+    },
   },
   title: {
     // fontFamily: 'Manrope',
@@ -84,7 +102,24 @@ const useStyles = makeStyles((theme) => ({
   },
   gap: {
     flexGrow: 1,
-  }
+  },
+  social: {
+    // position: 'absolute',
+    display: 'flex',
+    right: 20,
+    [theme.breakpoints.down('xs')]: {
+      right: 0
+    },
+  },
+  socialImg: {
+    width: 35,
+    display: 'block',
+    margin: 'auto',
+    marginRight: 10,
+    [theme.breakpoints.down('xs')]: {
+      marginRight: 4,
+    },
+  },
 }));
 
 export default Navbar;
