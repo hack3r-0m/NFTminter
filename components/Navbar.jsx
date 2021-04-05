@@ -30,7 +30,7 @@ const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAdd
         <div className={classes.divider}></div>
 
         <Typography variant="h6" className={classes.title2}>
-          Mint ERC721 or ERC1155 standard tokens on Polygon
+          Mint NFTs for free on Polygon
         </Typography>
 
         <div className={classes.gap}></div>
