@@ -161,7 +161,7 @@ const Form = ({
       } else if (nftType === 'ERC1155') {
         //add this if a popup blocker is being triggered
         window.Arkane.arkaneConnect().createSigner();
-        
+
         console.log(web3)
         contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
 
@@ -357,7 +357,13 @@ const Form = ({
           />
         </div>
 
-        <Button type="submit" className={classes.submit}>Submit</Button>
+        <div className={classes.lastSec}>
+          <div className={classes.note}>
+            Once your NFT is minted on the Polygon blockchain, you will not
+            be able to edit or update any of its information.
+          </div>
+          <Button type="submit" className={classes.submit}>Submit</Button>
+        </div>
       </div>
 
     </form>
@@ -515,9 +521,26 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
     }
   },
+  lastSec: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      display: 'block',
+      margin: '30px 0'
+    },
+  },
+  note: {
+    color: '#6E798F',
+    maxWidth: 370,
+    margin: 'auto 0',
+    [theme.breakpoints.down('md')]: {
+      margin: 'auto',
+      marginBottom: 20
+    },
+  },
   submit: {
     background: '#8247E5',
-    padding: '15px 24px',
+    padding: '11px 30px',
     fontSize: 16,
     color: '#FFFFFF',
     borderRadius: 37,
