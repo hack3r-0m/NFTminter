@@ -27,7 +27,14 @@ const Success = ({ networkId, trsHash, setTrsHash, arkaneUrl }) => {
         </a>
       </Typography>
       <div className={classes.btnGrp}>
-        {/* <Button className={classes.view}>View on OpenSea</Button> */}
+
+        <Button 
+          className={classes.view}
+          href={`https://matic.opensea.io/category/${arkaneUrl}?chainId=137`}
+          target="_blank"
+        >View on OpenSea
+        </Button>
+
         {
           networkId === 137 && arkaneUrl &&
           <Button
