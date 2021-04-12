@@ -19,7 +19,6 @@ const Form = ({
   setIsLoading,
   setTrsHash,
   setErr,
-  networkId,
   setOpen,
   setArkaneUrl
 }) => {
