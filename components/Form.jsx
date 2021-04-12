@@ -157,7 +157,7 @@ const Form = ({
           }
         )
       } else if (nftType === 'ERC1155') {
-        
+       
         contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
 
         let nonce = await contract_1155.methods.getNonce(signerAddress).call();
