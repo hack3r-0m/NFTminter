@@ -156,7 +156,7 @@ const Form = ({
           }
         )
       } else if (nftType === 'ERC1155') {
-       
+        
         contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
 
         let nonce = await contract_1155.methods.getNonce(signerAddress).call();
@@ -216,9 +216,11 @@ const Form = ({
         if (!signerAddress) {
           setOpen(true);
           setErr("Connect to wallet first");
+          
         // } else if (networkId !== 80001 && networkId !== 137) {
         //   setOpen(true);
         //   setErr("");
+          
         } else {
           setOpen(true);
           setErr("Enter all mandatory fields");

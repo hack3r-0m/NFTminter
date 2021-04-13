@@ -26,9 +26,11 @@ const Index = ({ signerAddress, contract_1155, contract_721 }) => {
         aria-describedby="simple-modal-description"
       >
         <div className={classes.paper}>
+
           <Typography variant="h6" style={{ marginBottom: 15, color: 'tomato' }}>
             Error: {err}
           </Typography>
+
         </div>
       </Modal>
       <div className={classes.cont}>
