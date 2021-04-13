@@ -4,10 +4,10 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
-const Success = ({ networkId, trsHash, setTrsHash, arkaneUrl }) => {
+const Success = ({ trsHash, setTrsHash, arkaneUrl }) => {
   const classes = useStyles();
 
-  const url = networkId === 137 ? 'https://explorer-mainnet.maticvigil.com/tx/' : 'https://explorer-mumbai.maticvigil.com/tx/'
+  const url = 'https://explorer-mainnet.maticvigil.com/tx/';
 
   return (
     <div className={classes.root}>
@@ -27,9 +27,16 @@ const Success = ({ networkId, trsHash, setTrsHash, arkaneUrl }) => {
         </a>
       </Typography>
       <div className={classes.btnGrp}>
-        {/* <Button className={classes.view}>View on OpenSea</Button> */}
+
+        <Button
+          className={classes.view}
+          href={`https://matic.opensea.io/category/${arkaneUrl}?chainId=137`}
+          target="_blank"
+        >View on OpenSea
+        </Button>
+
         {
-          networkId === 137 && arkaneUrl &&
+          arkaneUrl &&
           <Button
             href={`https://arkane.market/inventory/MATIC/${arkaneUrl}`}
             target="_blank"

@@ -19,7 +19,6 @@ const Form = ({
   setIsLoading,
   setTrsHash,
   setErr,
-  networkId,
   setOpen,
   setArkaneUrl
 }) => {
@@ -78,7 +77,7 @@ const Form = ({
   const onSubmit = async (e) => {
     e.preventDefault();
     // if all req fields are avaialable
-    if (name && desc && file && signerAddress && (networkId === 80001 || networkId === 137)) {
+    if (name && desc && file && signerAddress) {
       setIsLoading(true);
       setErr('');
       setTrsHash('');
@@ -217,9 +216,11 @@ const Form = ({
         if (!signerAddress) {
           setOpen(true);
           setErr("Connect to wallet first");
-        } else if (networkId !== 80001 && networkId !== 137) {
-          setOpen(true);
-          setErr("");
+          
+        // } else if (networkId !== 80001 && networkId !== 137) {
+        //   setOpen(true);
+        //   setErr("");
+          
         } else {
           setOpen(true);
           setErr("Enter all mandatory fields");

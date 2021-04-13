@@ -14,8 +14,6 @@ import { makeStyles } from '@material-ui/core/styles';
 const abi_erc721_biconomy = require('../config/abi721-biconomy.json');
 const abi_erc1155_biconomy = require('../config/abi1155-biconomy.json');
 
-import checkNetwork from '../hooks/checkNetwork';
-
 var web3;
 
 const truncateAddress = (address) => {
@@ -55,7 +53,7 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
     }
   };
   const web3Modal = new Web3Modal({
-    cacheProvider: true,
+    cacheProvider: false,
     disableInjectedProvider: false,
     providerOptions,
   });
@@ -113,7 +111,7 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
     getAddress();
   }, [provider]);
 
-  checkNetwork(getAddress, 1000);
+  // checkNetwork(getAddress, 1000);
 
   const handleClickConnect = async () => {
     await connectWallet();

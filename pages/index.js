@@ -8,21 +8,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Form from '../components/Form';
 import Success from '../components/Success';
 
-const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
+const Index = ({ signerAddress, contract_1155, contract_721 }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [trsHash, setTrsHash] = useState('');
   const [arkaneUrl, setArkaneUrl] = useState('');
   const [err, setErr] = useState('')
   const [open, setOpen] = React.useState(false);
-
-  useEffect(() => {
-    console.log("inEffect", networkId)
-    if (signerAddress && networkId !== 137) {
-      setErr('');
-      setOpen(true);
-    } else setOpen(false);
-  }, [networkId])
 
   return (
     <main className={classes.main}>
@@ -34,16 +26,11 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
         aria-describedby="simple-modal-description"
       >
         <div className={classes.paper}>
-          {
-            err ?
-              <Typography variant="h6" style={{ marginBottom: 15, color: 'tomato' }}>
-                Error: {err}
-              </Typography>
-              :
-              <Typography variant="h6">
-                Your current Network Id is {networkId}. Change it to Matic Mainnet 137.
-              </Typography>
-          }
+
+          <Typography variant="h6" style={{ marginBottom: 15, color: 'tomato' }}>
+            Error: {err}
+          </Typography>
+
         </div>
       </Modal>
       <div className={classes.cont}>
@@ -59,7 +46,6 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
             setIsLoading={setIsLoading}
             setTrsHash={setTrsHash}
             setErr={setErr}
-            networkId={networkId}
             setOpen={setOpen}
             setArkaneUrl={setArkaneUrl}
           />
@@ -69,7 +55,6 @@ const Index = ({ signerAddress, contract_1155, contract_721, networkId }) => {
           <Success
             trsHash={trsHash}
             setTrsHash={setTrsHash}
-            networkId={networkId}
             arkaneUrl={arkaneUrl}
           />
         }
