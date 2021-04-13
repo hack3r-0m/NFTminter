@@ -55,7 +55,7 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
     }
   };
   const web3Modal = new Web3Modal({
-    cacheProvider: true,
+    cacheProvider: false,
     disableInjectedProvider: false,
     providerOptions,
   });
