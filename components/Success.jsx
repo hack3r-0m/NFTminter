@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { getRelativeTime } from '../utils/getRelativeTime';
+
 const Success = ({ trsHash, setTrsHash, arkaneUrl }) => {
   const classes = useStyles();
-
   const url = 'https://explorer-mainnet.maticvigil.com/tx/';
+
+  const [timeLeft, setTimeLeft] = useState(90);
+  useEffect(() => {
+    if (!timeLeft) return;
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
 
   return (
     <div className={classes.root}>
@@ -27,16 +37,19 @@ const Success = ({ trsHash, setTrsHash, arkaneUrl }) => {
         </a>
       </Typography>
       <div className={classes.btnGrp}>
-
-        <Button
+        {/* <Button
           className={classes.view}
           href={`https://matic.opensea.io/category/${arkaneUrl}?chainId=137`}
           target="_blank"
         >View on OpenSea
-        </Button>
+       </Button> */}
+        {timeLeft !== 0 &&
+          <Typography variant="h6" className={classes.title1}>
+            Wait {getRelativeTime(timeLeft)} listing on Arkane
+          </Typography>
+        }
 
-        {
-          arkaneUrl &&
+        {arkaneUrl && timeLeft === 0 &&
           <Button
             href={`https://arkane.market/inventory/MATIC/${arkaneUrl}`}
             target="_blank"
@@ -44,6 +57,7 @@ const Success = ({ trsHash, setTrsHash, arkaneUrl }) => {
           >View on Arkane</Button>
         }
       </div>
+
       <Button
         className={classes.more}
         onClick={() => setTrsHash('')}
