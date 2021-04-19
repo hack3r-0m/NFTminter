@@ -360,7 +360,7 @@ const Form = ({
             Once your NFT is minted on the Polygon blockchain, you will not
             be able to edit or update any of its information.
           </div>
-          <Button type="submit" className={classes.submit}>Submit</Button>
+          <Button type="submit" disabled={imgHash ? false : true} className={classes.submit}>Submit</Button>
         </div>
       </div>
 
@@ -545,6 +545,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
     '&:hover': {
       background: '#8247E5',
+    },
+    '&:disabled': {
+      background: '#9c67f5',
     }
   },
   error: {
