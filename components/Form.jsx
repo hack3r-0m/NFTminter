@@ -30,6 +30,7 @@ const Form = ({
   const [surl, setSurl] = useState('');
   const [file, setFile] = useState(null);
   const [imgSrc, setImgSrc] = useState("");
+  const [imgHash, setImgHash] = useState('');
   const [nftType, setNftType] = useState('ERC721');
   const [ercTwoNum, setErcTwoNum] = useState(1);
   const [errors, setErrors] = useState({
@@ -54,10 +55,14 @@ const Form = ({
     }
   }
   // handle file upload
-  const handleFile = (e) => {
+  const handleFile = async (e) => {
     // console.log("object")
     if (e.target.files[0]?.size < 1e7) {
       setFile(e.target.files[0]);
+      const cid = await pinFileToIPFS(e.target.files[0]);
+      toast("File uploaded to IPFS", { type: "success" });
+      console.log("IPFS imgHash", cid);
+      setImgHash(cid);
       setErrors(pS => ({ ...pS, file: '' }))
       // console.log(e.target.files[0]?.size < 1e7)
       if (e.target.files.length !== 0) {
@@ -72,12 +77,11 @@ const Form = ({
     }
   }
 
-
-
   const onSubmit = async (e) => {
     e.preventDefault();
     // if all req fields are avaialable
-    if (name && desc && file && signerAddress) {
+    if (name && desc && file && signerAddress && imgHash) {
+      console.log("Submitting...")
       setIsLoading(true);
       setErr('');
       setTrsHash('');
@@ -85,9 +89,6 @@ const Form = ({
       // Upload files on IPFS
       let ipfsHash = '';
       try {
-        const imgHash = await pinFileToIPFS(file);
-        toast("File uploaded to IPFS", { type: "success" });
-
         ipfsHash = await pinJSONToIPFS({
           name: name,
           description: desc,
@@ -156,7 +157,7 @@ const Form = ({
           }
         )
       } else if (nftType === 'ERC1155') {
-        
+
         contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
 
         let nonce = await contract_1155.methods.getNonce(signerAddress).call();
@@ -213,14 +214,15 @@ const Form = ({
       } else {
         validateName();
         validateDesc();
+        setIsLoading(false);
         if (!signerAddress) {
           setOpen(true);
           setErr("Connect to wallet first");
-          
-        // } else if (networkId !== 80001 && networkId !== 137) {
-        //   setOpen(true);
-        //   setErr("");
-          
+
+          // } else if (networkId !== 80001 && networkId !== 137) {
+          //   setOpen(true);
+          //   setErr("");
+
         } else {
           setOpen(true);
           setErr("Enter all mandatory fields");
@@ -248,12 +250,12 @@ const Form = ({
                 Upload your file here
               </Typography>
               <Typography variant="h6" className={classes.uploadTitle2}>
-                JPG, PNG, or MP4 videos accepted.
+                JPG, PNG, MP4, PDF or HTML  videos accepted.
                 10MB limit.
               </Typography>
             </React.Fragment>
           }
-          <input accept="audio/*,video/*,image/*" id="upload-file" onChange={handleFile} type='file' hidden />
+          <input accept="audio/*, video/*, image/*, .html, .pdf" id="upload-file" onChange={handleFile} type='file' hidden />
           <label htmlFor="upload-file">
             <Button component="span" className={classes.uploadBtn}>
               {file ? file.name : 'Click to upload'}
@@ -321,12 +323,12 @@ const Form = ({
                   setNftType('ERC721')
                 }}>
                 ERC721
-            </Button>
+              </Button>
               <Button className={classes.formTypeButton}
                 disabled={nftType === 'ERC1155' ? true : false}
                 onClick={() => setNftType('ERC1155')}>
                 ERC1155
-            </Button>
+              </Button>
             </div>
           </div>
           <div className={classes.formTitle}>
@@ -358,7 +360,7 @@ const Form = ({
             Once your NFT is minted on the Polygon blockchain, you will not
             be able to edit or update any of its information.
           </div>
-          <Button type="submit" className={classes.submit}>Submit</Button>
+          <Button type="submit" disabled={imgHash ? false : true} className={classes.submit}>Submit</Button>
         </div>
       </div>
 
@@ -543,6 +545,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
     '&:hover': {
       background: '#8247E5',
+    },
+    '&:disabled': {
+      background: '#9c67f5',
     }
   },
   error: {
