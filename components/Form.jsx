@@ -250,12 +250,12 @@ const Form = ({
                 Upload your file here
               </Typography>
               <Typography variant="h6" className={classes.uploadTitle2}>
-                JPG, PNG, or MP4 videos accepted.
+                JPG, PNG, MP4, PDF or HTML  videos accepted.
                 10MB limit.
               </Typography>
             </React.Fragment>
           }
-          <input accept="audio/*,video/*,image/*" id="upload-file" onChange={handleFile} type='file' hidden />
+          <input accept="audio/*, video/*, image/*, .html, .pdf" id="upload-file" onChange={handleFile} type='file' hidden />
           <label htmlFor="upload-file">
             <Button component="span" className={classes.uploadBtn}>
               {file ? file.name : 'Click to upload'}
