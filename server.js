@@ -28,4 +28,21 @@ async function run() {
 
 run();
 
+app.post('/add', async function (req, res) {
+	try {
+		const { name, description, image, external_url } = req.body;
+		const newDocument = {
+			name: name,
+			description: description,
+			image: image,
+			external_url: external_url
+		}
+		const result = await collection.insertOne(newDocument);
+		res.send(result);
+	} catch(e) {
+		console.log(e);
+		res.sendStatus(400);
+	}
+});
+
 app.listen(8080);
