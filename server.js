@@ -32,12 +32,14 @@ app.use(express.json());
 
 app.post('/add', async function (req, res) {
 	try {
-		const { name, description, image, external_url } = req.body;
+		const { name, description, image, external_url, type, count } = req.body;
 		const newDocument = {
 			name: name,
 			description: description,
 			image: image,
 			external_url: external_url,
+			type: type, // ERC721 or ERC1155
+			count: count,
 			timestamp: Date.now()
 		}
 		const result = await collection.insertOne(newDocument);
@@ -51,6 +53,31 @@ app.post('/add', async function (req, res) {
 app.get('/all', async function (req, res) {
 	try {
 		const result = await collection.find({}, {sort: { timestamp: 1 }}).toArray();
+		console.log(result);
+		res.send(result);
+	} catch(e) {
+		console.log(e);
+		res.sendStatus(400);
+	}
+});
+
+app.post('/approve', async function (req, res) {
+	try {
+		// mint
+		const { id } = req.body;
+		const result = await collection.deleteOne({_id: id});
+		console.log(result);
+		res.send(result);
+	} catch(e) {
+		console.log(e);
+		res.sendStatus(400);
+	}
+});
+
+app.post('/decline', async function (req, res) {
+	try {
+		const { id } = req.body;
+		const result = await collection.deleteOne({_id: id});
 		console.log(result);
 		res.send(result);
 	} catch(e) {
