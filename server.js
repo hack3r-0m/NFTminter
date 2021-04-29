@@ -15,8 +15,10 @@ let collection;
 
 async function run() {
   try {
+  	console.log("Starting DB connection...");
     await client.connect();
     collection = await client.db("minter").collection("tokens");
+    console.log("DB ready");
   } catch(e) {
   	console.log(e);
   }
@@ -36,7 +38,7 @@ app.post('/add', async function (req, res) {
 			description: description,
 			image: image,
 			external_url: external_url,
-			timestamp:
+			timestamp: Date.now()
 		}
 		const result = await collection.insertOne(newDocument);
 		res.send(result);
@@ -48,7 +50,7 @@ app.post('/add', async function (req, res) {
 
 app.get('/all', async function (req, res) {
 	try {
-		const result = await collection.find({}).toArray();
+		const result = await collection.find({}, {sort: { timestamp: 1 }}).toArray();
 		console.log(result);
 		res.send(result);
 	} catch(e) {
