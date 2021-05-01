@@ -51,6 +51,7 @@ app.post('/add', async function (req, res) {
 			description: description,
 			image: image,
 			external_url: external_url,
+			uri: uri,
 			type: type, // ERC721 or ERC1155
 			count: count,
 			timestamp: Date.now()
@@ -77,7 +78,11 @@ app.get('/all', async function (req, res) {
 app.post('/approve', async function (req, res) {
 	try {
 		const { id } = req.body;
-		const status = await ERC721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash).send()
+		const item = await collection.findOne({_id: id});
+		if item.type === "ERC721":
+			const status = await ERC721.methods.mintToCaller(item.minter, item.uri).send();
+		elif item.type === "ERC1155":
+			const status = await ERC1155.methods.mintToCaller(item.counter, item.count, encodedParams, item.uri).send();
 		const result = await collection.deleteOne({_id: id});
 		console.log(result);
 		res.send(result);
