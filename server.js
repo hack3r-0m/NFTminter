@@ -55,7 +55,7 @@ app.use(cors());
 app.post("/add", async function (req, res) {
   try {
     const {
-      address,
+    address,
       name,
       description,
       image,
@@ -150,16 +150,6 @@ app.post("/decline", async function (req, res) {
     const result = await collection.deleteOne({ _id: id });
     console.log(result);
     res.send(result);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(400);
-  }
-});
-
-app.post("/mint", async function (req, res) {
-  try {
-    // direct mints; approval-less content
-    res.send();
   } catch (e) {
     console.log(e);
     res.sendStatus(400);
