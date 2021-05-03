@@ -4,7 +4,7 @@ const cors = require("cors");
 const Web3 = require("web3");
 const MongoClient = require("mongodb").MongoClient;
 const ERC721ABI = require("./config/erc721.json");
-const ERC1155ABI = require("./config/erc721.json");
+const ERC1155ABI = require("./config/erc1155.json");
 
 var web3 = new Web3("https://rpc-mainnet.maticvigil.com");
 var account = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY);
@@ -107,13 +107,13 @@ app.get('/all/:page(\d+)', async function (req, res) {
 
 app.post('/mint', async function (req, res) {
     try {
-        const { minter, uri, count } = req.body;
+        const { minter, uri, count, type } = req.body;
         let status;
-        if(item.type === "ERC721")
-            status = await ERC721.methods.mintTocaller(item.minter, item.uri).send({from: account.address});
-        else if(item.type === "ERC1155")
+        if(type === "ERC721")
+            status = await ERC721.methods.mintToCaller(minter, uri).send({from: account.address, gas: 500000});
+        else if(type === "ERC1155")
             status = await ERC1155.methods.mintTocaller(
-                item.minter, item.count, encodedParams, item.uri).send({from: account.address}
+                minter, count, encodedParams, uri).send({from: account.address, gas: 500000}
             );
         res.send(status);
     } catch(e) {
@@ -129,10 +129,12 @@ app.post('/approve', async function (req, res) {
         const item = await collection.findOne({_id: id});
         let status;
         if(item.type === "ERC721")
-            status = await ERC721.methods.mintTocaller(item.minter, item.uri).send({from: account.address});
+            status = await ERC721.methods.mintToCaller(item.minter, item.uri).send(
+                {from: account.address, gas: 500000}
+            );
         else if(item.type === "ERC1155")
             status = await ERC1155.methods.mintTocaller(
-                item.minter, item.count, encodedParams, item.uri).send({from: account.address}
+                item.minter, item.count, encodedParams, item.uri).send({from: account.address, gas: 500000}
             );
         const result = await collection.deleteOne({_id: id});
         console.log(status);
