@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors')
 const Web3 = require('web3');
 const MongoClient = require('mongodb').MongoClient;
 const ERC721ABI = require('./config/erc721.json');
@@ -41,6 +42,7 @@ run();
 var app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(cors());
 
 app.post('/add', async function (req, res) {
 	try {
