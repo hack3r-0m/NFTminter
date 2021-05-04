@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const Web3 = require("web3");
 const MongoClient = require("mongodb").MongoClient;
+const { nanoid }  = require("nanoid");
 const ERC721ABI = require("./config/erc721.json");
 const ERC1155ABI = require("./config/erc1155.json");
 
@@ -38,7 +39,9 @@ async function run() {
   try {
     console.log("Starting DB connection...");
     await client.connect();
-    collection = await client.db("minter").collection("tokens");
+    db = await client.db("minter");
+    collection = db.collection("tokens");
+    addresses = db.collection("addresses");
     console.log("DB ready");
   } catch (e) {
     console.log(e);
@@ -51,6 +54,24 @@ var app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+
+app.get("/nonce", async function (req, res) {
+    try {
+        const count = await addresses.countDocuments({"address": req.query.address}, {limit: 1});
+        if (count == 0) {
+            res.sendStatus(403);
+            return;
+        }
+        const nonce = `I am signing this nonce: ${nanoid()}`;
+        const result = await addresses.updateOne({"address": req.query.address}, {$set: {nonce: nonce}});
+        res.send(nonce);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
+// app.post("/authenticate", async function (req, res));
 
 app.post("/add", async function (req, res) {
   try {
@@ -96,7 +117,9 @@ app.get('/all', async function (req, res) {
 
 app.get('/all/:page(\d+)', async function (req, res) {
     try {
-        const result = await collection.find({}, {sort: { timestamp: 1 }, limit: 10, skip: (page - 1)*10}).toArray();
+        const result = await collection.find({}, {
+            sort: { timestamp: 1 }, limit: 10, skip: (parseInt(req.params.page) - 1)*10}
+        ).toArray();
         console.log(result);
         res.send(result);
     } catch(e) {
