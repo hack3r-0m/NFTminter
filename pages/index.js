@@ -66,8 +66,8 @@ const Index = ({ signerAddress, contract_1155, contract_721 }) => {
 const useStyles = makeStyles((theme) => ({
   main: {
     width: '100%',
-    margin: '10px auto',
-    marginBottom: 20,
+    margin: '40px auto',
+    minHeight: '100%',
     textAlign: 'center',
     [theme.breakpoints.down('xs')]: {
       marginTop: '20px'

@@ -124,13 +124,11 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
 
   return (
     <button
-      className={classes.btn}
+      className={classes.walletBtn}
       onClick={signerAddress ? handleClickAddress : handleClickConnect}>
       <Blockies
         className={classes.img}
-        seed={signerAddress.toLowerCase()}
-        size={8}
-        scale={3}
+        seed={signerAddress ? signerAddress : ''}
       />
       <div>
         {signerAddress ? truncateAddress(signerAddress) : "Connect Wallet"}
@@ -159,19 +157,45 @@ export const getSignatureParameters = signature => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  btn: {
-    background: 'rgb(183,192,238)',
+  walletBtn: {
+    background: '#e3e3e3',
     cursor: 'pointer',
     border: 0,
     outline: 'none',
-    borderRadius: 9999,
-    height: 35,
+    borderRadius: '18px',
+    height: '36px',
+    lineHeight: '36px',
+    padding: '0 18px 0 8px',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+
+    ["@media (max-width:599px)"]: {
+      padding: 0,
+    },
+
+    '&:hover': {
+      backgroundColor: '#000',
+      color: 'white',
+    },
+
+    '& div': {
+      ["@media (max-width:599px)"]: {
+        margin: 0,
+        display: 'none'
+      },
+    }
   },
   img: {
-    borderRadius: 999,
-    marginRight: 5
+    borderRadius: '12px',
+    marginRight: 5,
+    height: '24px !important',
+    width: '24px !important',
+
+    ["@media (max-width:599px)"]: {
+      marginRight: 0,
+      height: '36px !important', width: '36px !important',
+      borderRadius: '20px',
+    },
   }
 }));
 
