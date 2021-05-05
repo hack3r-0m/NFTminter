@@ -71,7 +71,30 @@ app.get("/nonce", async function (req, res) {
     }
 });
 
-// app.post("/authenticate", async function (req, res));
+app.post("/authenticate", async function (req, res) {
+    try {
+        const { address, signature } = req.body;
+        var result = await addresses.findOne({"address": address});
+        console.log(result);
+        if (result.nonce === undefined) {
+            res.sendStatus(403);
+            return;
+        }
+        const account = await web3.eth.accounts.recover(result.nonce, signature);
+        if (account !== address) {
+            res.sendStatus(403);
+            return;
+        }
+        const token = String(nanoid());
+        console.log(token);
+        var result = await addresses.updateOne({"address": req.query.address}, {$set: {token: token}});
+        console.log(token);
+        res.send(token);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
 
 app.post("/add", async function (req, res) {
   try {
