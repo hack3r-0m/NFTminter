@@ -4,6 +4,7 @@ const cors = require("cors");
 const Web3 = require("web3");
 const MongoClient = require("mongodb").MongoClient;
 const { nanoid }  = require("nanoid");
+const cookieParser = require('cookie-parser')
 const ERC721ABI = require("./config/erc721.json");
 const ERC1155ABI = require("./config/erc1155.json");
 
@@ -51,6 +52,7 @@ async function run() {
 run();
 
 var app = express();
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
@@ -63,7 +65,8 @@ app.get("/nonce", async function (req, res) {
             return;
         }
         const nonce = `I am signing this nonce: ${nanoid()}`;
-        const result = await addresses.updateOne({"address": req.query.address}, {$set: {nonce: nonce}});
+        const result = await addresses.updateOne({"address": req.query.address},
+            {$set: {nonce: nonce, expires: Date.now()+604800000}});
         res.send(nonce);
     } catch(e) {
         console.log(e);
@@ -85,11 +88,11 @@ app.post("/authenticate", async function (req, res) {
             res.sendStatus(403);
             return;
         }
-        const token = String(nanoid());
-        console.log(token);
-        var result = await addresses.updateOne({"address": req.query.address}, {$set: {token: token}});
-        console.log(token);
-        res.send(token);
+        const token = nanoid();
+        var result = await addresses.updateOne({"address": address}, {$set: {token: token}});
+        res.cookie("address", address, { maxAge: 604800000 });
+        res.cookie("token", token, { maxAge: 604800000 });
+        res.sendStatus(200);
     } catch(e) {
         console.log(e);
         res.sendStatus(400);
@@ -98,26 +101,17 @@ app.post("/authenticate", async function (req, res) {
 
 app.post("/add", async function (req, res) {
   try {
-    const {
-    address,
-      name,
-      description,
-      image,
-      external_url,
-      uri,
-      type,
-      count,
-    } = req.body;
+    const { address, name, description, image, external_url, uri, type, count} = req.body;
     const newDocument = {
-      minter: minter,
-      name: name,
-      description: description,
-      image: image,
-      external_url: external_url,
-      uri: uri,
-      type: type, // ERC721 or ERC1155
-      count: count,
-      timestamp: Date.now(),
+        minter: minter,
+        name: name,
+        description: description,
+        image: image,
+        external_url: external_url,
+        uri: uri,
+        type: type, // ERC721 or ERC1155
+        count: count,
+        timestamp: Date.now()
     };
     const result = await collection.insertOne(newDocument);
     res.send(result);
@@ -203,5 +197,13 @@ app.post("/decline", async function (req, res) {
     res.sendStatus(400);
   }
 });
+
+async function check_auth(req, res) {
+    const result = await addresses.findOne({"address": req.cookies.address, "token": req.cookies.token}, {_id: 0});
+    if (result.expires === undefined)
+        res.sendStatus(401);
+    else if (result.expires <= Date.now())
+        res.redirect("/nonce");
+}
 
 app.listen(8080);
