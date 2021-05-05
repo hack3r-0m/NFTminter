@@ -64,10 +64,7 @@ app.get("/nonce", async function (req, res) {
             res.sendStatus(403);
             return;
         }
-        const nonce = `I am signing this nonce: ${nanoid()}`;
-        const result = await addresses.updateOne({"address": req.query.address},
-            {$set: {nonce: nonce, expires: Date.now()+604800000}});
-        res.send(nonce);
+        res.send(await generate_nonce(req.query.address));
     } catch(e) {
         console.log(e);
         res.sendStatus(400);
@@ -99,7 +96,7 @@ app.post("/authenticate", async function (req, res) {
     }
 });
 
-app.post("/add", async function (req, res) {
+app.post("/add", auth, async function (req, res) {
   try {
     const { address, name, description, image, external_url, uri, type, count} = req.body;
     const newDocument = {
@@ -121,7 +118,7 @@ app.post("/add", async function (req, res) {
   }
 });
 
-app.get('/all', async function (req, res) {
+app.get('/all', auth, async function (req, res) {
     try {
         const result = await collection.find({}, {sort: { timestamp: 1 }, limit: 10}).toArray();
         console.log(result);
@@ -132,7 +129,7 @@ app.get('/all', async function (req, res) {
     }
 });
 
-app.get('/all/:page(\d+)', async function (req, res) {
+app.get('/all/:page(\d+)', auth, async function (req, res) {
     try {
         const result = await collection.find({}, {
             sort: { timestamp: 1 }, limit: 10, skip: (parseInt(req.params.page) - 1)*10}
@@ -145,7 +142,7 @@ app.get('/all/:page(\d+)', async function (req, res) {
     }
 });
 
-app.post('/mint', async function (req, res) {
+app.post('/mint', auth, async function (req, res) {
     try {
         const { minter, uri, count, type } = req.body;
         let status;
@@ -163,7 +160,7 @@ app.post('/mint', async function (req, res) {
 });
 
 
-app.post('/approve', async function (req, res) {
+app.post('/approve', auth, async function (req, res) {
     try {
         const { id } = req.body;
         const item = await collection.findOne({_id: id});
@@ -185,7 +182,7 @@ app.post('/approve', async function (req, res) {
     }
 });
 
-app.post("/decline", async function (req, res) {
+app.post("/decline", auth, async function (req, res) {
   try {
     const { id } = req.body;
     // unpin from IPFS
@@ -198,12 +195,23 @@ app.post("/decline", async function (req, res) {
   }
 });
 
-async function check_auth(req, res) {
+async function auth(req, res, next) {
     const result = await addresses.findOne({"address": req.cookies.address, "token": req.cookies.token}, {_id: 0});
-    if (result.expires === undefined)
+    if (result === null) {
         res.sendStatus(401);
-    else if (result.expires <= Date.now())
-        res.redirect("/nonce");
+        return;
+    } else if (result.expires < Date.now() || result.expires === undefined) {
+        res.status(401).send(await generate_nonce(req.cookies.address));
+        return;
+    }
+    next();
+}
+
+async function generate_nonce(address) {
+    const nonce = `I am signing this nonce: ${nanoid()}`;
+    const result = await addresses.updateOne({"address": address},
+        {$set: {nonce: nonce, expires: Date.now()+604800000}});
+    return nonce;
 }
 
 app.listen(8080);
