@@ -72,6 +72,8 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
         , { apiKey: process.env.biconomy_api_key, debug: true });
       setBiconomyProvider(new Web3(biconomy));
 
+      console.log(externalProvider);
+
       let w3 = new Web3(externalProvider);
       setProvider(w3);
 
