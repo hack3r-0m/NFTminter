@@ -34,13 +34,13 @@ const encodedParams =
 00000000000000000000000000000000000013081b00000000000000000000000000000000000000000000000000000000000000600000000000000\
 000000000000000000000000000000000000000000000000008676976656e55524c000000000000000000000000000000000000000000000000";
 
-let collection;
+let collection, addresses;
 
 async function run() {
   try {
     console.log("Starting DB connection...");
     await client.connect();
-    db = await client.db("minter");
+    const db = await client.db("minter");
     collection = db.collection("tokens");
     addresses = db.collection("addresses");
     console.log("DB ready");
@@ -114,6 +114,19 @@ app.post("/authenticate", async function (req, res) {
     console.log(e);
     res.sendStatus(400);
   }
+});
+
+app.post("/logout", auth, async function (req, res) {
+    try {
+        const result = await addresses.updateOne({"address": req.cookies.address},
+            {$unset: {nonce: "", token: "", expires: ""}});
+        res.clearCookie("address");
+        res.clearCookie("token");
+        res.sendStatus(200);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
 });
 
 app.post("/add", auth, async function (req, res) {
@@ -197,6 +210,44 @@ app.post("/mint", auth, async function (req, res) {
     console.log(e);
     res.sendStatus(400);
   }
+
+app.get("/all", auth, async function (req, res) {
+    try {
+        const result = await collection.find({}, {sort: { timestamp: 1 }, limit: 10}).toArray();
+        res.send(result);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
+app.get("/all/:page(\\d+)", auth, async function (req, res) {
+    try {
+        const result = await collection.find({}, {
+            sort: { timestamp: 1 }, limit: 10, skip: (parseInt(req.params.page) - 1)*10}
+        ).toArray();
+        res.send(result);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
+app.post("/mint", async function (req, res) {
+    try {
+        const { minter, uri, count, type } = req.body;
+        let status;
+        if(type === "ERC721")
+            status = await ERC721.methods.mintToCaller(minter, uri).send({from: account.address, gas: 500000});
+        else if(type === "ERC1155")
+            status = await ERC1155.methods.mintTocaller(
+                minter, count, encodedParams, uri).send({from: account.address, gas: 500000}
+            );
+        res.send(status);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
 });
 
 app.post("/approve", auth, async function (req, res) {
