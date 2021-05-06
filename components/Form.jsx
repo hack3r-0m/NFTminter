@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'
+
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { domainType, metaTransactionType, domainData721, domainData1155 } from '../utils/biconomy-vars';
 import { getSignatureParameters, web3 } from './ConnectWallet';
@@ -38,6 +41,7 @@ const Form = ({
     desc: "",
     file: ""
   })
+  const [adult, setAdult] = useState(false);
 
   // validate form
   const validateName = () => {
@@ -102,6 +106,22 @@ const Form = ({
         setOpen(true);
         setErr('Uploading files on IPFS failed');
       }
+
+      // if (adult) {
+      //   const res = await axios.post("http://localhost:8080/", {
+      //     name: name,
+      //     description: desc,
+      //     image: 'https://gateway.pinata.cloud/ipfs/' + imgHash,
+      //     external_url: surl,
+      //     uri: 'https://gateway.pinata.cloud/ipfs/' + ipfsHash,
+      //     type: nftType,
+      //     count: nftType === 'ERC1155' ? ercTwoNum : 1
+      //   })
+      //   console.log(res);
+      //   setIsLoading(false);
+      //   toast("NFT Minted", { type: "success" });
+      //   return;
+      // }
 
       if (nftType === 'ERC721') {
 
@@ -343,6 +363,19 @@ const Form = ({
             />
           </div>
         </div>
+
+        <div className={classes.formTitle} style={{ display: 'flex' }}>
+          <label className={classes.formTitleLabel} style={{ marginBottom: 0, marginRight: 30 }}>
+            Content is 18+
+          </label>
+          <Checkbox
+            checked={adult}
+            onChange={(e) => setAdult(e.target.checked)}
+            color="primary"
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        </div>
+
         <div className={classes.formTitle}>
           <label className={classes.formTitleLabel}>Social Media URL (optional)</label>
           <input
@@ -378,7 +411,6 @@ const useStyles = makeStyles((theme) => ({
   },
   uploadContainer: {
     width: '48%',
-    height: 550,
     backgroundColor: '#F3F4F7',
     borderRadius: 20,
     [theme.breakpoints.down('md')]: {

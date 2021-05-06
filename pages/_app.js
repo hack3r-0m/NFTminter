@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const App = ({ Component, pageProps }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -51,6 +52,7 @@ const App = ({ Component, pageProps }) => {
         contract_721={contract_721}
         networkId={networkId}
       />
+      <Footer />
     </React.Fragment>
   );
 }

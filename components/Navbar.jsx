@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from "next/router";
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import { AppBar, Container } from "@material-ui/core";
+// import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import MenuIcon from "@material-ui/icons/Menu";
 
 import dynamic from "next/dynamic";
 const ConnectWallet = dynamic(() => import("./ConnectWallet"), {
@@ -13,111 +14,143 @@ const ConnectWallet = dynamic(() => import("./ConnectWallet"), {
 
 const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
   const classes = useStyles();
+  const router = useRouter();
+
+  const [openMenu, setOpenMenu] = useState(false);
+  const menuItemContainerRef = useRef(null);
+  const toggleMenu = (state) => {
+    state
+      ? menuItemContainerRef.current.classList.add("open")
+      : menuItemContainerRef.current.classList.remove("open");
+    setOpenMenu(state);
+  };
 
   return (
-    <AppBar position="static" className={classes.root}>
-      <Toolbar className={classes.rootTool}>
-        <Link href="/">
-          <a>
-            <img src="/logo.svg" alt="logo" className={classes.img} />
-          </a>
-        </Link>
+    <AppBar position="static" classes={{ root: classes.nav }}>
+      <Container className={classes.container}>
+        <div className={classes.flexContainer}>
+          <Link href="/" style={{ display: "flex" }}>
+            <a> <img src="/logo.svg" alt="logo" className={classes.logo} /> </a>
+          </Link>
 
-        <Typography variant="h6" className={classes.title}>
-          NFT Minter
-        </Typography>
+          <div style={{ display: "flex" }}>
+            <div
+              className={classes.menuItemContainer}
+              ref={menuItemContainerRef}
+            >
+              <a href="https://polygon-nft-bridge.netlify.app/" className="menuItem">
+                Bridge
+              </a>
+              <Link href="/" style={{ display: "flex" }}>
+                <a className={router.pathname == "/" ? "menuItem active" : "menuItem"}> Minter </a>
+              </Link>
+              <Link href="/account" style={{ display: "flex" }}>
+                <a className={router.pathname == "/account" ? "menuItem active" : "menuItem"}> Account </a>
+              </Link>
+            </div>
 
-        <div className={classes.divider}></div>
-
-        <Typography variant="h6" className={classes.title2}>
-          Mint NFTs for free on Polygon
-        </Typography>
-
-        <div className={classes.gap}></div>
-
-        <div className={classes.social}>
-          <a href="https://discord.gg/ZnakscDVGe" target="_blank" rel="noopener noreferrer">
-            <img src="/img/discord.svg" className={classes.socialImg} />
-          </a>
+            <ConnectWallet
+              signerAddress={signerAddress}
+              setContract_1155={setContract_1155}
+              setContract_721={setContract_721}
+              setSignerAddress={setSignerAddress}
+              setNetworkId={setNetworkId}
+            />
+            <MenuIcon
+              className={classes.menuIcon}
+              onClick={() => {
+                openMenu ? toggleMenu(false) : toggleMenu(true);
+              }}
+            />
+          </div>
         </div>
-        <ConnectWallet
-          signerAddress={signerAddress}
-          setContract_1155={setContract_1155}
-          setContract_721={setContract_721}
-          setSignerAddress={setSignerAddress}
-          setNetworkId={setNetworkId}
-        />
-      </Toolbar>
+      </Container>
     </AppBar>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    margin: 'auto',
-    backgroundColor: '#F8F9FA',
-    padding: '10px 70px',
-    boxShadow: 'none',
-    [theme.breakpoints.down('xs')]: {
-      padding: '10px 0px',
+  nav: {
+    height: "80px",
+    backgroundColor: "#fff",
+    boxShadow: "none",
+    borderBottom: "2px solid #7533E2",
+  },
+  container: {
+    maxWidth: "1080px",
+    margin: "auto",
+    padding: "0",
+    ["@media (max-width:1120px)"]: {
+      padding: "0 20px",
+    },
+    ["@media (max-width:599px)"]: {
+      padding: "0 15px",
     },
   },
-  rootTool: {
-    [theme.breakpoints.down('xs')]: {
-      padding: '0px 5px',
+  flexContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  logo: {
+    height: "40px",
+    "@media (max-width:599px)": {
+      height: "30px",
     },
   },
-  img: {
-    width: 150,
-    marginRight: 20,
-    [theme.breakpoints.down('xs')]: {
-      width: 130,
+  menuItemContainer: {
+    "@media (max-width:599px)": {
+      display: "flex",
+      flexDirection: "column",
+      position: "absolute",
+      backgroundColor: "white",
+      width: "100%",
+      top: "80px",
+      left: 0,
+      padding: 0,
+      height: 0,
+      overflow: "hidden",
+      transition: "all 0.5s ease",
+    },
+
+    "&.open": {
+      padding: "20px 0",
+      height: "auto",
+      transition: "all 0.5s ease",
+    },
+
+    "& .menuItem": {
+      color: "black",
+      marginRight: "30px",
+      fontSize: "16px",
+      textDecoration: "none",
+      lineHeight: "36px",
+      fontWeight: "600",
+
+      "&.active": {
+        color: "#7533E2",
+        fontWeight: "bold",
+      },
+
+      "&:hover": {
+        color: "#7533E2",
+        textDecoration: "underline",
+      },
+
+      "@media (max-width:599px)": {
+        margin: 0,
+        textAlign: "center",
+        lineHeight: "50px",
+      },
     },
   },
-  title: {
-    // fontFamily: 'Manrope',
-    fontWeight: 400,
-    fontSize: 22,
-    color: '#061024',
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
-    },
-  },
-  divider: {
-    width: 36,
-    border: '0.9px solid #8247E5',
-    transform: 'rotate(90deg)',
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
-    },
-  },
-  title2: {
-    fontWeight: 'normal',
-    fontSize: 17,
-    color: '#061024',
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
-    },
-  },
-  gap: {
-    flexGrow: 1,
-  },
-  social: {
-    // position: 'absolute',
-    display: 'flex',
-    right: 20,
-    [theme.breakpoints.down('xs')]: {
-      right: 0
-    },
-  },
-  socialImg: {
-    width: 35,
-    display: 'block',
-    margin: 'auto',
-    marginRight: 10,
-    [theme.breakpoints.down('xs')]: {
-      marginRight: 4,
+  menuIcon: {
+    display: "none",
+    "@media (max-width:599px)": {
+      display: "block",
+      color: "black",
+      marginLeft: "20px",
+      marginTop: "6px",
     },
   },
 }));
