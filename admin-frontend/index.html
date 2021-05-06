@@ -8,12 +8,63 @@
   </head>
 
   <body>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script
+      src="https://unpkg.com/axios/dist/axios.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"
+      type="application/javascript"
+    ></script>
 
     <script>
+      axios.defaults.withCredentials = true;
+
+      async function get_nonce_and_sign() {}
+
+      async function conn_metamask() {
+        await window.ethereum.enable();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = await provider.getSigner();
+        const addr = await signer.getAddress();
+
+        const nonce = axios.get(`http://127.0.0.1:8080/nonce?address=${addr}`);
+
+        var meta_mask = document.getElementById("meta_mask");
+
+        try {
+          nonce.then((obj) => {
+            signer.signMessage(obj.data).then((sign) => {
+              axios
+
+                .post("http://127.0.0.1:8080/authenticate", {
+                  withCredentials: true,
+                  credentials: "include",
+                  address: addr,
+                  signature: sign.toString(),
+                })
+
+                .then((data) => {
+                  if (data.status === 200) {
+                    meta_mask.innerHTML = `AUTH SUCCESSFUL! ${addr}`;
+                  } else {
+                    meta_mask.innerHTML = "AUTH FAILED OR ADMIN KEY NOT ADDED";
+                  }
+                });
+            });
+          });
+        } catch {
+          meta_mask.innerHTML = "AUTH FAILED OR ADMIN KEY NOT ADDED";
+        }
+      }
+
       async function approve(_id) {
         var element1 = document.getElementById(_id);
-        var res1 = axios.post("http://127.0.0.1:8080/approve", { id: _id });
+        var res1 = axios.post("http://127.0.0.1:8080/approve", {
+          id: _id,
+          withCredentials: true,
+          credentials: "include",
+        });
 
         res1
           .then((res) => {
@@ -29,7 +80,11 @@
       }
       async function decline(_id) {
         var element2 = document.getElementById(_id);
-        var res2 = axios.post("http://127.0.0.1:8080/decline", { id: _id });
+        var res2 = axios.post("http://127.0.0.1:8080/decline", {
+          id: _id,
+          withCredentials: true,
+          credentials: "include",
+        });
 
         res2
           .then((res) => {
@@ -45,7 +100,10 @@
       }
       async function clicked() {
         let data_;
-        var res = axios.get("http://127.0.0.1:8080/all");
+        var res = axios.get("http://127.0.0.1:8080/all", {
+          withCredentials: true,
+          credentials: "include",
+        });
 
         await res.then((obj) => {
           data_ = obj.data;
@@ -64,6 +122,12 @@
     </script>
 
     <div id="root">
+      <div id="meta_mask">
+        <button onclick="conn_metamask()">CONNECT METAMASK</button>
+      </div>
+
+      <br />
+
       <button onclick="clicked()">ALL MINT REQUESTS</button>
     </div>
 
