@@ -53,7 +53,7 @@ run();
 
 var app = express();
 app.use(cookieParser());
-app.use(cors({ origin: "http://127.0.0.1:8080", credentials: true }));
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -117,22 +117,22 @@ app.post("/authenticate", async function (req, res) {
 });
 
 app.post("/logout", auth, async function (req, res) {
-    try {
-        const result = await addresses.updateOne({"address": req.cookies.address},
-            {$unset: {nonce: "", token: "", expires: ""}});
-        res.clearCookie("address");
-        res.clearCookie("token");
-        res.sendStatus(200);
-    } catch(e) {
-        console.log(e);
-        res.sendStatus(400);
-    }
+  try {
+    const result = await addresses.updateOne({ "address": req.cookies.address },
+      { $unset: { nonce: "", token: "", expires: "" } });
+    res.clearCookie("address");
+    res.clearCookie("token");
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(400);
+  }
 });
 
-app.post("/add", auth, async function (req, res) {
+app.post("/add", async function (req, res) {
   try {
     const {
-      address,
+      minter,
       name,
       description,
       image,
@@ -153,6 +153,34 @@ app.post("/add", auth, async function (req, res) {
       timestamp: Date.now(),
     };
     const result = await collection.insertOne(newDocument);
+    res.send(result.data);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(400);
+  }
+});
+
+app.post("/mint", async function (req, res) {
+  console.log("mint2", req.body);
+  try {
+    const { minter, uri, count, type } = req.body;
+    let status;
+    if (type === "ERC721")
+      status = await ERC721.methods.mintToCaller(minter, uri).send({ from: account.address, gas: 500000 });
+    else if (type === "ERC1155")
+      status = await ERC1155.methods.mintTocaller(
+        minter, count, encodedParams, uri).send({ from: account.address, gas: 500000 }
+        );
+    res.send(status);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(400);
+  }
+});
+
+app.get("/all", auth, async function (req, res) {
+  try {
+    const result = await collection.find({}, { sort: { timestamp: 1 }, limit: 10 }).toArray();
     res.send(result);
   } catch (e) {
     console.log(e);
@@ -160,61 +188,17 @@ app.post("/add", auth, async function (req, res) {
   }
 });
 
-app.post("/mint", auth, async function (req, res) {
+app.get("/all/:page(\\d+)", auth, async function (req, res) {
   try {
-    const { minter, uri, count, type } = req.body;
-    let status;
-    if (type === "ERC721")
-      status = await ERC721.methods
-        .mintToCaller(minter, uri)
-        .send({ from: account.address, gas: 500000 });
-    else if (type === "ERC1155")
-      status = await ERC1155.methods
-        .mintTocaller(minter, count, encodedParams, uri)
-        .send({ from: account.address, gas: 500000 });
-    res.send(status);
+    const result = await collection.find({}, {
+      sort: { timestamp: 1 }, limit: 10, skip: (parseInt(req.params.page) - 1) * 10
+    }
+    ).toArray();
+    res.send(result);
   } catch (e) {
     console.log(e);
     res.sendStatus(400);
   }
-
-app.get("/all", auth, async function (req, res) {
-    try {
-        const result = await collection.find({}, {sort: { timestamp: 1 }, limit: 10}).toArray();
-        res.send(result);
-    } catch(e) {
-        console.log(e);
-        res.sendStatus(400);
-    }
-});
-
-app.get("/all/:page(\\d+)", auth, async function (req, res) {
-    try {
-        const result = await collection.find({}, {
-            sort: { timestamp: 1 }, limit: 10, skip: (parseInt(req.params.page) - 1)*10}
-        ).toArray();
-        res.send(result);
-    } catch(e) {
-        console.log(e);
-        res.sendStatus(400);
-    }
-});
-
-app.post("/mint", async function (req, res) {
-    try {
-        const { minter, uri, count, type } = req.body;
-        let status;
-        if(type === "ERC721")
-            status = await ERC721.methods.mintToCaller(minter, uri).send({from: account.address, gas: 500000});
-        else if(type === "ERC1155")
-            status = await ERC1155.methods.mintTocaller(
-                minter, count, encodedParams, uri).send({from: account.address, gas: 500000}
-            );
-        res.send(status);
-    } catch(e) {
-        console.log(e);
-        res.sendStatus(400);
-    }
 });
 
 app.post("/approve", auth, async function (req, res) {
@@ -276,4 +260,6 @@ async function generate_nonce(address) {
   return nonce;
 }
 
-app.listen(8080);
+app.listen(process.env.PORT || 8080, () => {
+  console.log("Server starting on port 8080...")
+});

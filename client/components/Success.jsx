@@ -26,38 +26,45 @@ const Success = ({ trsHash, setTrsHash, arkaneUrl }) => {
         Congratulation
       </Typography>
       <Typography variant="h6" className={classes.title2}>
-        Your NFT is minted successfully
+        {trsHash === 'ok'
+          ? 'We will review your NFT and list shortly'
+          : 'Your NFT is minted successfully'
+        }
       </Typography>
-      <Typography variant="h6" style={{ marginBottom: 15 }}>
-        <a style={{ color: '#8247E5' }}
-          rel="noopener noreferrer"
-          target="_blank"
-          href={url + trsHash}>
-          Trs Hash
-        </a>
-      </Typography>
-      <div className={classes.btnGrp}>
-        {/* <Button
-          className={classes.view}
-          href={`https://matic.opensea.io/category/${arkaneUrl}?chainId=137`}
-          target="_blank"
-        >View on OpenSea
-       </Button> */}
-        {timeLeft !== 0 &&
-          <Typography variant="h6" className={classes.title1}>
-            Wait {getRelativeTime(timeLeft)} listing on Arkane
+      {
+        trsHash !== 'ok' &&
+        <React.Fragment>
+          <Typography variant="h6" style={{ marginBottom: 15 }}>
+            <a style={{ color: '#8247E5' }}
+              rel="noopener noreferrer"
+              target="_blank"
+              href={url + trsHash}>
+              Trs Hash
+            </a>
           </Typography>
-        }
+          <div className={classes.btnGrp}>
+            {/* <Button
+                className={classes.view}
+                href={`https://matic.opensea.io/category/${arkaneUrl}?chainId=137`}
+                target="_blank"
+              >View on OpenSea
+            </Button> */}
+            {timeLeft !== 0 &&
+              <Typography variant="h6" className={classes.title1}>
+                Wait {getRelativeTime(timeLeft)} listing on Arkane
+              </Typography>
+            }
 
-        {arkaneUrl && timeLeft === 0 &&
-          <Button
-            href={`https://arkane.market/inventory/MATIC/${arkaneUrl}`}
-            target="_blank"
-            className={classes.view}
-          >View on Arkane</Button>
-        }
-      </div>
-
+            {arkaneUrl && timeLeft === 0 &&
+              <Button
+                href={`https://arkane.market/inventory/MATIC/${arkaneUrl}`}
+                target="_blank"
+                className={classes.view}
+              >View on Arkane</Button>
+            }
+          </div>
+        </React.Fragment>
+      }
       <Button
         className={classes.more}
         onClick={() => setTrsHash('')}
