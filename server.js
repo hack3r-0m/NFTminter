@@ -160,39 +160,6 @@ app.post("/add", auth, async function (req, res) {
   }
 });
 
-app.get("/all", auth, async function (req, res) {
-  try {
-    const result = await collection
-      .find({}, { sort: { timestamp: 1 }, limit: 10 })
-      .toArray();
-    console.log(result);
-    res.send(result);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(400);
-  }
-});
-
-app.get("/all/:page(d+)", auth, async function (req, res) {
-  try {
-    const result = await collection
-      .find(
-        {},
-        {
-          sort: { timestamp: 1 },
-          limit: 10,
-          skip: (parseInt(req.params.page) - 1) * 10,
-        }
-      )
-      .toArray();
-    console.log(result);
-    res.send(result);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(400);
-  }
-});
-
 app.post("/mint", auth, async function (req, res) {
   try {
     const { minter, uri, count, type } = req.body;
