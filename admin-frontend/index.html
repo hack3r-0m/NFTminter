@@ -28,34 +28,30 @@
         const signer = await provider.getSigner();
         const addr = await signer.getAddress();
 
-        const nonce = axios.get(`http://127.0.0.1:8080/nonce?address=${addr}`);
-
         var meta_mask = document.getElementById("meta_mask");
 
-        try {
-          nonce.then((obj) => {
-            signer.signMessage(obj.data).then((sign) => {
-              axios
-
+        await axios
+          .get(`http://127.0.0.1:8080/nonce?address=${addr}`)
+          .then(async (obj) => {
+            await signer.signMessage(obj.data).then(async (sign) => {
+              await axios
                 .post("http://127.0.0.1:8080/authenticate", {
                   withCredentials: true,
                   credentials: "include",
                   address: addr,
                   signature: sign.toString(),
                 })
-
                 .then((data) => {
                   if (data.status === 200) {
                     meta_mask.innerHTML = `AUTH SUCCESSFUL! ${addr}`;
-                  } else {
-                    meta_mask.innerHTML = "AUTH FAILED OR ADMIN KEY NOT ADDED";
                   }
-                });
+                })
+                .catch(
+                  (meta_mask.innerHTML = "AUTH FAILED OR ADMIN KEY NOT ADDED")
+                );
             });
-          });
-        } catch {
-          meta_mask.innerHTML = "AUTH FAILED OR ADMIN KEY NOT ADDED";
-        }
+          })
+          .catch((meta_mask.innerHTML = "AUTH FAILED OR ADMIN KEY NOT ADDED"));
       }
 
       async function approve(_id) {
