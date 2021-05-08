@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Form from '../components/Form';
 import Success from '../components/Success';
 
-const Index = ({ signerAddress, contract_1155, contract_721 }) => {
+const Index = ({ signerAddress, contract_1155, contract_721, providerMetamask }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [trsHash, setTrsHash] = useState('');
@@ -48,6 +48,7 @@ const Index = ({ signerAddress, contract_1155, contract_721 }) => {
             setErr={setErr}
             setOpen={setOpen}
             setArkaneUrl={setArkaneUrl}
+            providerMetamask={providerMetamask}
           />
         }
         {

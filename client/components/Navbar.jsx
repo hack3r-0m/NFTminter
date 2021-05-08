@@ -12,7 +12,7 @@ const ConnectWallet = dynamic(() => import("./ConnectWallet"), {
   ssr: false,
 });
 
-const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
+const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAddress, setNetworkId, setProviderMetamask }) => {
   const classes = useStyles();
   const router = useRouter();
 
@@ -55,6 +55,7 @@ const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAdd
               setContract_721={setContract_721}
               setSignerAddress={setSignerAddress}
               setNetworkId={setNetworkId}
+              setProviderMetamask={setProviderMetamask}
             />
             <MenuIcon
               className={classes.menuIcon}

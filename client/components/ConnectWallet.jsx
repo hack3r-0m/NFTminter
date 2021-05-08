@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Blockies from "react-blockies";
 import Web3 from "web3";
-import Web3Modal from "web3modal";
+import Web3Modal, { getInjectedProviderName } from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Arkane as AK } from "@arkane-network/web3-arkane-provider";
 
@@ -20,7 +20,14 @@ const truncateAddress = (address) => {
   return address.slice(0, 6) + "..." + address.slice(-4);
 };
 
-const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSignerAddress, setNetworkId }) => {
+const ConnectWallet = ({
+  signerAddress,
+  setContract_1155,
+  setContract_721,
+  setSignerAddress,
+  setNetworkId,
+  setProviderMetamask
+}) => {
   const classes = useStyles();
   // const [isWaiting, setWaiting] = useState(false)
   const [provider, setProvider] = useState(undefined);
@@ -72,8 +79,6 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
         , { apiKey: process.env.biconomy_api_key, debug: true });
       setBiconomyProvider(new Web3(biconomy));
 
-      console.log(externalProvider);
-
       let w3 = new Web3(externalProvider);
       setProvider(w3);
 
@@ -104,6 +109,9 @@ const ConnectWallet = ({ signerAddress, setContract_1155, setContract_721, setSi
       // console.log(networkId)
       setNetworkId(networkId);
 
+      const providerName = await web3.currentProvider.isMetaMask;
+      setProviderMetamask(providerName);
+      // console.log(providerName);
     } else {
       setSignerAddress("");
     }

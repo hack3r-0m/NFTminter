@@ -13,6 +13,7 @@ const App = ({ Component, pageProps }) => {
   const [contract_721, setContract_721] = useState(null);
   const [signerAddress, setSignerAddress] = useState("");
   const [networkId, setNetworkId] = useState('');
+  const [providerMetamask, setProviderMetamask] = useState(null);
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -43,6 +44,7 @@ const App = ({ Component, pageProps }) => {
         setContract_721={setContract_721}
         setSignerAddress={setSignerAddress}
         setNetworkId={setNetworkId}
+        setProviderMetamask={setProviderMetamask}
       />
       <Component
         {...pageProps}
@@ -51,6 +53,7 @@ const App = ({ Component, pageProps }) => {
         contract_1155={contract_1155}
         contract_721={contract_721}
         networkId={networkId}
+        providerMetamask={providerMetamask}
       />
       <Footer />
     </React.Fragment>
