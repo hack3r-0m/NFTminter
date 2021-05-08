@@ -132,10 +132,10 @@ const Form = ({
             uri: 'https://gateway.pinata.cloud/ipfs/' + ipfsHash,
             count: nftType === 'ERC1155' ? ercTwoNum : 1
           })
-          console.log(res);
+          console.log(res.data);
+          setTrsHash(res.data.transactionHash);
           setIsLoading(false);
           // setArkaneUrl("ok");
-          // setTrsHash("ok");
           toast("NFT Minted", { type: "success" });
         }
       }
