@@ -57,7 +57,9 @@ const corsConfig = {
   credentials: true,
   origin: true,
 };
+
 app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -85,6 +87,7 @@ app.get("/nonce", async function (req, res) {
 });
 
 app.post("/authenticate", async function (req, res) {
+  console.log(req.headers);
   try {
     const { address, signature } = req.body;
     var result = await addresses.findOne({ address: address });
@@ -113,7 +116,9 @@ app.post("/authenticate", async function (req, res) {
       sameSite: true,
       httpOnly: false,
     });
-    res.sendStatus(200);
+    console.log(token);
+    // res.sendStatus(200);
+    res.send(token);
   } catch (e) {
     console.log(e);
     res.sendStatus(400);
@@ -241,6 +246,7 @@ app.post("/decline", auth, async function (req, res) {
 });
 
 async function auth(req, res, next) {
+  console.log(req.cookies)
   const result = await addresses.findOne(
     { address: req.cookies.address, token: req.cookies.token },
     { _id: 0 }

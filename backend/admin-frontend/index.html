@@ -24,14 +24,11 @@
       const addr = await signer.getAddress();
 
       var meta_mask = document.getElementById("meta_mask");
-      console.log(provider, signer, addr)
+
       await axios
         .get(`http://127.0.0.1:8080/nonce?address=${addr}`)
         .then(async (obj) => {
-          console.log(obj)
           await signer.signMessage(obj.data).then(async (sign) => {
-            console.log(sign)
-            console.log(sign.toString());
             await axios
               .post("http://127.0.0.1:8080/authenticate", {
                 withCredentials: true,
@@ -102,6 +99,7 @@
       await res.then((obj) => {
         data_ = obj.data;
       });
+      console.log(data_)
 
       var element = document.getElementById("all_items");
 
