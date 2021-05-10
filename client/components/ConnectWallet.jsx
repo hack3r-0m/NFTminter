@@ -26,7 +26,8 @@ const ConnectWallet = ({
   setContract_721,
   setSignerAddress,
   setNetworkId,
-  setProviderMetamask
+  setProviderMetamask,
+  setWeb3Instatce
 }) => {
   const classes = useStyles();
   // const [isWaiting, setWaiting] = useState(false)
@@ -84,7 +85,6 @@ const ConnectWallet = ({
 
       biconomy.onEvent(biconomy.READY, () => {
         console.log("initialized")
-
       }).onEvent(biconomy.ERROR, (error, message) => {
         console.log(error);
         console.log(message);
@@ -98,6 +98,7 @@ const ConnectWallet = ({
   const getAddress = async () => {
     if (provider && biconomyProvider) {
       web3 = provider;
+      setWeb3Instatce(provider);
 
       const accounts = await web3.eth.getAccounts();
       setSignerAddress(accounts[0]);

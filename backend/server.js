@@ -53,7 +53,11 @@ run();
 
 var app = express();
 app.use(cookieParser());
-app.use(cors());
+const corsConfig = {
+  credentials: true,
+  origin: true,
+};
+app.use(cors(corsConfig));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

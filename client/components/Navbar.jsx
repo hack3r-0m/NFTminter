@@ -6,13 +6,23 @@ import { AppBar, Container } from "@material-ui/core";
 // import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuIcon from "@material-ui/icons/Menu";
+import CollectionsIcon from '@material-ui/icons/Collections';
 
+import { BridgeIcon, MintIcon } from "./UI/Icons";
 import dynamic from "next/dynamic";
 const ConnectWallet = dynamic(() => import("./ConnectWallet"), {
   ssr: false,
 });
 
-const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAddress, setNetworkId, setProviderMetamask }) => {
+const Navbar = ({
+  signerAddress,
+  setContract_1155,
+  setContract_721,
+  setSignerAddress,
+  setNetworkId,
+  setProviderMetamask,
+  setWeb3Instatce
+}) => {
   const classes = useStyles();
   const router = useRouter();
 
@@ -33,19 +43,26 @@ const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAdd
             <a> <img src="/logo.svg" alt="logo" className={classes.logo} /> </a>
           </Link>
 
-          <div style={{ display: "flex" }}>
+          <div className={classes.navigationSection}>
             <div
               className={classes.menuItemContainer}
               ref={menuItemContainerRef}
             >
               <a href="https://polygon-nft-bridge.netlify.app/" className="menuItem">
+                <BridgeIcon className="menuItemIcon active" />
                 Bridge
               </a>
               <Link href="/" style={{ display: "flex" }}>
-                <a className={router.pathname == "/" ? "menuItem active" : "menuItem"}> Minter </a>
+                <a className={router.pathname == "/" ? "menuItem active" : "menuItem"}>
+                  <MintIcon className="menuItemIcon" />
+                  Minter
+                </a>
               </Link>
               <Link href="/account" style={{ display: "flex" }}>
-                <a className={router.pathname == "/account" ? "menuItem active" : "menuItem"}> Account </a>
+                <a className={router.pathname == "/account" ? "menuItem active" : "menuItem"}>
+                  <CollectionsIcon className="menuItemIcon" />
+                  Account
+                </a>
               </Link>
             </div>
 
@@ -56,6 +73,7 @@ const Navbar = ({ signerAddress, setContract_1155, setContract_721, setSignerAdd
               setSignerAddress={setSignerAddress}
               setNetworkId={setNetworkId}
               setProviderMetamask={setProviderMetamask}
+              setWeb3Instatce={setWeb3Instatce}
             />
             <MenuIcon
               className={classes.menuIcon}
@@ -99,10 +117,21 @@ const useStyles = makeStyles((theme) => ({
       height: "30px",
     },
   },
+  // everything except the logo inside the navbar.
+  navigationSection: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: 'center',
+    paddingLeft: '30px',
+    "@media (max-width:859px)": {
+      justifyContent: 'flex-end',
+    }
+  },
   menuItemContainer: {
-    "@media (max-width:599px)": {
-      display: "flex",
-      flexDirection: "column",
+    display: "flex",
+    "@media (max-width:859px)": {
+      justifyContent: 'space-evenly',
       position: "absolute",
       backgroundColor: "white",
       width: "100%",
@@ -114,40 +143,66 @@ const useStyles = makeStyles((theme) => ({
       transition: "all 0.5s ease",
     },
 
+    // when the menu is opened in mobile view.
     "&.open": {
       padding: "20px 0",
       height: "auto",
       transition: "all 0.5s ease",
     },
 
+    // menu items
     "& .menuItem": {
-      color: "black",
-      marginRight: "30px",
-      fontSize: "16px",
+      backgroundColor: "transparent",
+      color: "#000",
+      marginRight: "15px",
+      fontSize: "12px",
+      fontWeight: "700",
       textDecoration: "none",
+      padding: "0 15px 0 12px",
+      border: "1px solid #E8E8E8",
+      borderRadius: "19px",
+      display: "flex",
+      alignItems: "center",
+      height: "36px",
       lineHeight: "36px",
-      fontWeight: "600",
 
       "&.active": {
-        color: "#7533E2",
-        fontWeight: "bold",
+        backgroundColor: "#8247E5",
+        color: "#fff",
+        borderColor: "#8247E5",
+
+        "& svg": {
+          fill: "#EDF0F7",
+        }
       },
 
       "&:hover": {
-        color: "#7533E2",
-        textDecoration: "underline",
+        backgroundColor: "#8247E5",
+        color: "#fff",
+        borderColor: "#8247E5",
+
+        "& svg": {
+          fill: "#EDF0F7",
+        }
       },
 
-      "@media (max-width:599px)": {
-        margin: 0,
+      "@media (max-width:859px)": {
         textAlign: "center",
         lineHeight: "50px",
+      },
+      // icons inside the menu Item
+      "& .menuItemIcon": {
+        width: "20px",
+        height: "20px",
+        fill: "#6E798F",
+        marginRight: "4px",
+        transition: 'none',
       },
     },
   },
   menuIcon: {
     display: "none",
-    "@media (max-width:599px)": {
+    "@media (max-width:859px)": {
       display: "block",
       color: "black",
       marginLeft: "20px",

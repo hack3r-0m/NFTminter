@@ -8,11 +8,11 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const App = ({ Component, pageProps }) => {
-  const [isMobile, setIsMobile] = useState(false);
   const [contract_1155, setContract_1155] = useState(null);
   const [contract_721, setContract_721] = useState(null);
   const [signerAddress, setSignerAddress] = useState("");
   const [networkId, setNetworkId] = useState('');
+  const [web3Instance, setWeb3Instatce] = useState('');
   const [providerMetamask, setProviderMetamask] = useState(null);
 
   useEffect(() => {
@@ -21,12 +21,6 @@ const App = ({ Component, pageProps }) => {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
-    // Naive check for mobile
-    setIsMobile(
-      navigator.userAgent.match(
-        /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
-      )
-    )
   }, []);
 
   return (
@@ -45,15 +39,16 @@ const App = ({ Component, pageProps }) => {
         setSignerAddress={setSignerAddress}
         setNetworkId={setNetworkId}
         setProviderMetamask={setProviderMetamask}
+        setWeb3Instatce={setWeb3Instatce}
       />
       <Component
         {...pageProps}
-        isMobile={isMobile}
         signerAddress={signerAddress}
         contract_1155={contract_1155}
         contract_721={contract_721}
         networkId={networkId}
         providerMetamask={providerMetamask}
+        web3Instance={web3Instance}
       />
       <Footer />
     </React.Fragment>
