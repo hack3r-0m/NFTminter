@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
+// material ui
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
 
+// components
 import Form from '../components/Form';
 import Success from '../components/Success';
+import Hero from "../components/Hero";
 
 const Index = ({ signerAddress, contract_1155, contract_721, providerMetamask }) => {
   const classes = useStyles();
@@ -17,6 +20,8 @@ const Index = ({ signerAddress, contract_1155, contract_721, providerMetamask })
   const [open, setOpen] = React.useState(false);
 
   return (
+    <>
+    <Hero />
     <main className={classes.main}>
       {/** Modal for Network Error */}
       <Modal
@@ -61,6 +66,7 @@ const Index = ({ signerAddress, contract_1155, contract_721, providerMetamask })
         }
       </div>
     </main>
+    </>
   );
 }
 

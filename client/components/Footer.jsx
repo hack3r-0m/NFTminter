@@ -4,6 +4,10 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Grid } from "@material-ui/core";
 
+// images
+// import logo from "";
+// import bgImg from ;
+
 // icons
 import { Twitter } from "@material-ui/icons";
 
@@ -14,8 +18,8 @@ const Footer = () => {
     <footer className={classes.footer}>
       <Container className={classes.container}>
         <Grid container style={{ position: "relative", zIndex: "2" }}>
-          <Grid item xs={12} sm={6} style={{ textAlign: 'left' }}>
-            <img src="img/polygon-logowhite.svg" alt="company logo" className={classes.logo} />
+          <Grid item xs={12} sm={6}>
+            <img src="/images/polygon-logowhite.svg" alt="company logo" className={classes.logo} />
             <p className={classes.text}>
               Polygon is a protocol and a framework for building and connecting
               Ethereum-compatible blockchain networks
@@ -33,7 +37,7 @@ const Footer = () => {
                 </div>
               </a>
               <a
-                href="https://discord.gg/ZnakscDVGe"
+                href="https://twitter.com/0xPolygon"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -57,12 +61,9 @@ const Footer = () => {
   );
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
+  ...theme.overrides.mui,
   footer: {
-    position: 'relative',
-    bottom: 0,
-    width: '100%',
-    marginTop: 60,
     borderTop: "10px solid #8247E5",
     backgroundColor: "#061024",
     padding: "70px 0",
@@ -75,7 +76,7 @@ const useStyles = makeStyles(() => ({
       position: "absolute",
       top: 0,
       left: 0,
-      backgroundImage: `url('img/footer-bg.png')`,
+      backgroundImage: `url("/images/footer-bg.png")`,
       backgroundSize: "cover",
       backgroundPosition: "center",
       opacity: 0.2,
