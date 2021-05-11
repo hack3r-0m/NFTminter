@@ -9,13 +9,13 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Admin from '../components/Admin';
 
-axios.defaults.withCredentials = true;
 
 const Index = ({ signerAddress, web3Instance }) => {
   const classes = useStyles();
   const [isAuth, setIsAuth] = useState(false);
   const [error, setError] = useState('');
-  const [data, setData] = useState(d);
+  const [data, setData] = useState([]);
+  const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
 
   const signLogin = async () => {
@@ -30,16 +30,17 @@ const Index = ({ signerAddress, web3Instance }) => {
 
       console.log("sign hash", sign);
 
-      const res = await axios.post(`http://127.0.0.1:8080/authenticate`, {
-        withCredentials: true,
-        credentials: "include",
-        address: signerAddress,
-        signature: sign.toString(),
+      const res = await axios("http://127.0.0.1:8080/authenticate", {
+        method: "post",
+        data: {
+          address: signerAddress,
+          signature: sign.toString(),
+        },
+        withCredentials: true
       });
-      if (res.status === 200) {
-        console.log(res.data)
-        setIsAuth(true);
-      }
+
+      setToken(res.data);
+      setIsAuth(true);
       setLoading(false);
     } catch (e) {
       setLoading(false);
@@ -51,14 +52,20 @@ const Index = ({ signerAddress, web3Instance }) => {
 
   const getData = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8080/all", {
-        withCredentials: true,
-        credentials: "include",
+      setLoading(true);
+      const { data } = await axios.get("http://127.0.0.1:8080/all", {
+        headers: {
+          address: signerAddress,
+          token: token
+        }
       });
-      console.log(res);
-      // setData(res.data);
+      console.log(data);
+      setData(data);
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.error(e);
+      setError('AUTH FAILED');
     }
   }
 
@@ -76,17 +83,25 @@ const Index = ({ signerAddress, web3Instance }) => {
         <title>NFT Admin | Polygon</title>
       </Head>
       <main className={classes.main}>
-        {
-          !isAuth && <Button className={classes.btn} onClick={signLogin}>
-            Admin AUth
+        {!isAuth ?
+          <Button className={classes.btn} onClick={signLogin}>
+            Admin Auth
+          </Button> : 'Auth Done!'
+        }
+        <br />
+        {data.length === 0 &&
+          <Button className={classes.btn} onClick={getData}>
+            Get Data
           </Button>
         }
-        <Button className={classes.btn} onClick={getData}>
-          Get Data
-        </Button>
         {isAuth && data.length > 0 &&
           data.map((item, i) => (
-            <Admin key={i} item={item} />
+            <Admin
+              key={i}
+              item={item}
+              token={token}
+              signerAddress={signerAddress}
+            />
           ))
         }
       </main>
@@ -99,9 +114,11 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     margin: '40px auto',
     minHeight: '50vh',
-    textAlign: 'center',
+    maxWidth: 800,
+    // textAlign: 'center',
     [theme.breakpoints.down('xs')]: {
-      marginTop: '20px'
+      marginTop: '20px',
+      maxWidth: '90vw',
     },
   },
   btn: {
@@ -110,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '10px 16px',
     fontSize: 16,
     color: '#FFFFFF',
-    borderRadius: 37,
+    borderRadius: 5,
     marginTop: 10,
     marginRight: 10,
     '&:hover': {
@@ -120,34 +137,3 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default Index;
-
-const d = [
-  {
-    description: "description",
-    external_url: null,
-    image: "image",
-    name: "name",
-    _id: "6087cb05ec8d560ad8152737",
-  },
-  {
-    description: "description",
-    external_url: null,
-    image: "image",
-    name: "name",
-    _id: "6087cb05ec8d560ad8152737",
-  },
-  {
-    description: "description",
-    external_url: null,
-    image: "image",
-    name: "name",
-    _id: "6087cb05ec8d560ad8152737",
-  },
-  {
-    description: "description",
-    external_url: null,
-    image: "image",
-    name: "name",
-    _id: "6087cb05ec8d560ad8152737",
-  }
-]

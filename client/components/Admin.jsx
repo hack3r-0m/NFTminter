@@ -1,67 +1,89 @@
 import React, { useState } from 'react'
 import axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-export default function Admin({ item }) {
+const Admin = ({ item, token, signerAddress }) => {
   const [approved, setApproved] = useState(false);
   const [declined, setDeclined] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const approve = async (e, _id) => {
     try {
+      setLoading(true);
+      console.log("Approving id", _id)
       const res = await axios.post("http://127.0.0.1:8080/approve", {
         id: _id,
         withCredentials: true,
         credentials: "include",
+      }, {
+        headers: {
+          address: signerAddress,
+          token: token
+        }
       });
       console.log(res.data)
       setApproved(true);
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.error(e);
       setError('Something went wrong...');
     }
   }
-  const decline = async () => {
+  const decline = async (e, _id) => {
     try {
+      setLoading(true);
       const res = await axios.post("http://127.0.0.1:8080/decline", {
         id: _id,
         withCredentials: true,
         credentials: "include",
+      }, {
+        headers: {
+          address: signerAddress,
+          token: token
+        }
       });
       console.log(res.data)
       setDeclined(true);
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.error(e);
       setError('Something went wrong...');
     }
   }
+
+  if (loading) {
+    return (
+      <CircularProgress color="secondary" />
+    )
+  }
   if (error) {
     return (
-      <div>
+      <div style={{ width: 'max-content', border: '2px dashed black', margin: '5px 0' }}>
         <p>{error}</p>
-        <p>-------------------------------</p>
       </div>
     )
   }
   if (approved) {
     return (
-      <div>
+      <div style={{ width: 'max-content', border: '2px dashed black', margin: '5px 0' }}>
         <p>Approved Successfully!</p>
-        <p>-------------------------------</p>
       </div>
     )
   }
 
   if (declined) {
     return (
-      <div>
+      <div style={{ width: 'max-content', border: '2px dashed black', margin: '5px 0' }}>
         <p>Declined Successfully!</p>
-        <p>-------------------------------</p>
       </div>
     )
   }
 
   return (
-    <div>
+    <div style={{ width: 'max-content', border: '2px dashed black', margin: '5px 0' }}>
       <p>ObjectId: {item._id}</p>
       <p>Name: {item.name}</p>
       <p>Description: {item.description}</p>
@@ -70,7 +92,8 @@ export default function Admin({ item }) {
       <p>Timestamp: ${item.timestamp}</p>
       <button value={item._id} onClick={(e) => approve(e, item._id)}>Approve</button>
       <button value={item._id} onClick={(e) => decline(e, item._id)}>Decline</button>
-      <p>-------------------------------</p>
     </div>
   )
 }
+
+export default Admin;
