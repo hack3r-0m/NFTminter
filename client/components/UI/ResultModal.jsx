@@ -51,26 +51,35 @@ const ResultModal = ({ minter, triggerModal, setTriggerModal, data }) => {
           {minter && (
             <>
               <p>
-                Transaction hash:{" "}
-                <span>
-                  <a
-                    href={`${url}${data.address}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {data.address}
-                  </a>
-                </span>
+                {
+                  data.address === 'ok' ?
+                    'We will review your NFT and list shortly'
+                    : <>
+                      <span>Transaction hash:{" "}</span>
+                      <span>
+                        <a
+                          href={`${url}${data.address}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {data.address}
+                        </a>
+                      </span>
+                    </>
+                }
+
               </p>
-              <p>Wait {timeLeft} seconds for listing on Arkane</p>
               {data.arkaneUrl && timeLeft === 0 && (
-                <button
-                  href={`https://arkane.market/inventory/MATIC/${data.arkaneUrl}`}
-                  target="_blank"
-                  className={`${classes.btn} ${classes.filled}`}
-                >
-                  View on Arkane
-                </button>
+                <>
+                  <p>Wait {timeLeft} seconds for listing on Arkane</p>
+                  <button
+                    href={`https://arkane.market/inventory/MATIC/${data.arkaneUrl}`}
+                    target="_blank"
+                    className={classes.btn}
+                  >
+                    View on Arkane
+                  </button>
+                </>
               )}
             </>
           )}

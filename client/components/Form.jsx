@@ -32,9 +32,8 @@ const Form = ({
   signerAddress,
   contract_1155,
   contract_721,
-  setIsLoading,
   setTrsHash,
-  setOpen,
+  setTriggerModal,
   setArkaneUrl,
   providerMetamask,
 }) => {
@@ -49,6 +48,7 @@ const Form = ({
   const [imgHash, setImgHash] = useState("");
   const [nftType, setNftType] = useState("ERC721");
   const [ercTwoNum, setErcTwoNum] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState("");
   const [errors, setErrors] = useState({
     name: "",
@@ -117,7 +117,6 @@ const Form = ({
         console.log(ipfsHash);
       } catch (err) {
         console.log("Error Uploading files on IPFS", err);
-        setOpen(true);
         setErr("Uploading files on IPFS failed");
       }
 
@@ -137,6 +136,7 @@ const Form = ({
           console.log(res);
           setIsLoading(false);
           setTrsHash("ok");
+          setTriggerModal(true);
           toast("NFT Added", { type: "success" });
         } else {
           const res = await axios.post("http://localhost:8080/mint", {
@@ -147,6 +147,7 @@ const Form = ({
           });
           console.log(res.data);
           setTrsHash(res.data.transactionHash);
+          setTriggerModal(true);
           setIsLoading(false);
           // setArkaneUrl("ok");
           toast("NFT Minted", { type: "success" });
@@ -212,10 +213,10 @@ const Form = ({
                       parseInt(receipt.events.Transfer.raw.topics[3])
                   );
                   setTrsHash(receipt.transactionHash);
+                  setTriggerModal(true);
                 })
                 .on("error", (error) => {
                   console.log(error);
-                  setOpen(true);
                   setErr("Transaction failed");
                 });
               //console.log(tx)
@@ -282,10 +283,10 @@ const Form = ({
                       parseInt(receipt.events.TransferSingle.returnValues[3])
                   );
                   setTrsHash(receipt.transactionHash);
+                  setTriggerModal(true);
                 })
                 .on("error", (error) => {
                   console.log(error);
-                  setOpen(true);
                   setErr("Transaction failed");
                 });
               // console.log(tx)
@@ -298,14 +299,8 @@ const Form = ({
           validateDesc();
           setIsLoading(false);
           if (!signerAddress) {
-            setOpen(true);
             setErr("Connect to wallet first");
-
-            // } else if (networkId !== 80001 && networkId !== 137) {
-            //   setOpen(true);
-            //   setErr("");
           } else {
-            setOpen(true);
             setErr("Enter all mandatory fields");
           }
         }
