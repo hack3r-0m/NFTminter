@@ -11,8 +11,9 @@ const theme = createMuiTheme({
         marginBottom: "30px",
         top: 0,
         left: 0,
+        position: "relative",
 
-        "& input": {
+        "& input, & textarea": {
           height: "50px",
           borderRadius: "6px",
           backgroundColor: "#fff",
@@ -31,6 +32,16 @@ const theme = createMuiTheme({
           "&:focus": {
             border: "1.5px solid #7533E2",
             outline: "none",
+          },
+          "&:disabled": {
+            pointerEvents: "none",
+            userSelect: "none",
+            backgroundColor: "transparent",
+            position: "relative",
+
+            "&~label": {
+              color:'gray',
+            },
           },
         },
         "& label": {
@@ -240,7 +251,7 @@ const theme = createMuiTheme({
 
         "& .credit": {
           display: "flex",
-          flexDirection: 'column',
+          flexDirection: "column",
           fontSize: "12px",
           marginTop: "40px",
           padding: "0 20px",
@@ -248,10 +259,10 @@ const theme = createMuiTheme({
           "& span": {
             fontWeight: "normal",
 
-            "&:first-child":{
-              marginBottom:'10px',
-              fontSize:'14px',
-            }
+            "&:first-child": {
+              marginBottom: "10px",
+              fontSize: "14px",
+            },
           },
         },
       },
@@ -281,10 +292,10 @@ const theme = createMuiTheme({
       },
       msg: {
         // backgroundColor: "#FFE8C3",
-        backgroundColor: 'rgb(255 232 195 / 56%)',
+        backgroundColor: "rgb(255 232 195 / 56%)",
         borderRadius: "6px",
         padding: "20px",
-        border: '1px solid #FFE8C3'
+        border: "1px solid #FFE8C3",
       },
       title: {
         fontWeight: "bold",

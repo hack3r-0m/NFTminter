@@ -10,7 +10,7 @@ const Hero = () => {
     <div className={classes.hero}>
       <Container className={classes.container}>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={12} sm={8} style={{alignItems:'center'}}>
             <Typography variant="h1" className={classes.title}>
               <span>NFT</span> Minter
             </Typography>
@@ -18,7 +18,7 @@ const Hero = () => {
               Mint NFT on polygon at speed of light!
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          {/* <Grid item xs={12} sm={4}>
             <div className={classes.graphicContainer}>
               <img
                 src="/images/graphic.png"
@@ -26,7 +26,7 @@ const Hero = () => {
                 className={classes.graphic}
               />
             </div>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </div>
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     color: "white",
-    marginBottom: "34px",
+    marginBottom: "10px",
     "& span": {
       fontWeight: "700",
     },
@@ -69,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "500",
     color: "#D8C4F7",
     lineHeight: "23px",
+    marginBottom:'40px',
     ["@media (max-width:959px)"]: {
       marginBottom: "50px",
     },
