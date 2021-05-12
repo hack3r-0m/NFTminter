@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Checkbox from '@material-ui/core/Checkbox';
+import {
+  Button,
+  Typography,
+  Container,
+  Checkbox,
+  Grid,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-import { domainType, metaTransactionType, domainData721, domainData1155 } from '../utils/biconomy-vars';
-import { getSignatureParameters, web3 } from './ConnectWallet';
+import {
+  domainType,
+  metaTransactionType,
+  domainData721,
+  domainData1155,
+} from "../utils/biconomy-vars";
+import { getSignatureParameters, web3 } from "./ConnectWallet";
 
-import { pinJSONToIPFS, pinFileToIPFS, encodedParams } from '../utils/ipfs';
+import { pinJSONToIPFS, pinFileToIPFS, encodedParams } from "../utils/ipfs";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,41 +33,41 @@ const Form = ({
   setErr,
   setOpen,
   setArkaneUrl,
-  providerMetamask
+  providerMetamask,
 }) => {
   const classes = useStyles();
 
   // hooks
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [surl, setSurl] = useState('');
+  const [name, setName] = useState("");
+  const [desc, setDesc] = useState("");
+  const [surl, setSurl] = useState("");
   const [file, setFile] = useState(null);
   const [imgSrc, setImgSrc] = useState("");
-  const [imgHash, setImgHash] = useState('');
-  const [nftType, setNftType] = useState('ERC721');
+  const [imgHash, setImgHash] = useState("");
+  const [nftType, setNftType] = useState("ERC721");
   const [ercTwoNum, setErcTwoNum] = useState(1);
   const [errors, setErrors] = useState({
     name: "",
     desc: "",
-    file: ""
-  })
+    file: "",
+  });
   const [adult, setAdult] = useState(false);
 
   // validate form
   const validateName = () => {
     if (name === "") {
-      setErrors(pS => ({ ...pS, name: 'Name cannot be empty' }))
+      setErrors((pS) => ({ ...pS, name: "Name cannot be empty" }));
     } else {
-      setErrors(pS => ({ ...pS, name: '' }))
+      setErrors((pS) => ({ ...pS, name: "" }));
     }
-  }
+  };
   const validateDesc = () => {
     if (desc === "") {
-      setErrors(pS => ({ ...pS, desc: 'Add description for your token' }))
+      setErrors((pS) => ({ ...pS, desc: "Add description for your token" }));
     } else {
-      setErrors(pS => ({ ...pS, desc: '' }))
+      setErrors((pS) => ({ ...pS, desc: "" }));
     }
-  }
+  };
   // handle file upload
   const handleFile = async (e) => {
     // console.log("object")
@@ -68,44 +77,44 @@ const Form = ({
       toast("File uploaded to IPFS", { type: "success" });
       console.log("IPFS imgHash", cid);
       setImgHash(cid);
-      setErrors(pS => ({ ...pS, file: '' }))
+      setErrors((pS) => ({ ...pS, file: "" }));
       // console.log(e.target.files[0]?.size < 1e7)
       if (e.target.files.length !== 0) {
         const reader = new FileReader();
-        reader.onload = e => {
+        reader.onload = (e) => {
           setImgSrc(e.target.result);
         };
         reader.readAsDataURL(e.target.files[0]);
       }
     } else {
-      setErrors(pS => ({ ...pS, file: 'File should be less than 10MB' }))
+      setErrors((pS) => ({ ...pS, file: "File should be less than 10MB" }));
     }
-  }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     // if all req fields are avaialable
     if (name && desc && file && signerAddress && imgHash) {
-      console.log("Submitting...")
+      console.log("Submitting...");
       setIsLoading(true);
-      setErr('');
-      setTrsHash('');
+      setErr("");
+      setTrsHash("");
 
       // Upload files on IPFS
-      let ipfsHash = '';
+      let ipfsHash = "";
       try {
         ipfsHash = await pinJSONToIPFS({
           name: name,
           description: desc,
-          image: 'https://gateway.pinata.cloud/ipfs/' + imgHash,
-          external_url: surl
-        })
+          image: "https://gateway.pinata.cloud/ipfs/" + imgHash,
+          external_url: surl,
+        });
         toast("JSON data uploaded to IPFS", { type: "success" });
-        console.log(ipfsHash)
+        console.log(ipfsHash);
       } catch (err) {
-        console.log('Error Uploading files on IPFS', err);
+        console.log("Error Uploading files on IPFS", err);
         setOpen(true);
-        setErr('Uploading files on IPFS failed');
+        setErr("Uploading files on IPFS failed");
       }
 
       // If Metamask use backend
@@ -115,12 +124,12 @@ const Form = ({
             minter: signerAddress,
             name: name,
             description: desc,
-            image: 'https://gateway.pinata.cloud/ipfs/' + imgHash,
+            image: "https://gateway.pinata.cloud/ipfs/" + imgHash,
             external_url: surl,
-            uri: 'https://gateway.pinata.cloud/ipfs/' + ipfsHash,
+            uri: "https://gateway.pinata.cloud/ipfs/" + ipfsHash,
             type: nftType,
-            count: nftType === 'ERC1155' ? ercTwoNum : 1
-          })
+            count: nftType === "ERC1155" ? ercTwoNum : 1,
+          });
           console.log(res);
           setIsLoading(false);
           setTrsHash("ok");
@@ -129,9 +138,9 @@ const Form = ({
           const res = await axios.post("http://localhost:8080/mint", {
             minter: signerAddress,
             type: nftType,
-            uri: 'https://gateway.pinata.cloud/ipfs/' + ipfsHash,
-            count: nftType === 'ERC1155' ? ercTwoNum : 1
-          })
+            uri: "https://gateway.pinata.cloud/ipfs/" + ipfsHash,
+            count: nftType === "ERC1155" ? ercTwoNum : 1,
+          });
           console.log(res.data);
           setTrsHash(res.data.transactionHash);
           setIsLoading(false);
@@ -141,9 +150,14 @@ const Form = ({
       }
       // If Arkane mint directly
       else {
-        if (nftType === 'ERC721') {
+        if (nftType === "ERC721") {
           let nonce = await contract_721.methods.getNonce(signerAddress).call();
-          let functionSignature = contract_721.methods.mintToCaller(signerAddress, 'https://gateway.pinata.cloud/ipfs/' + ipfsHash).encodeABI();
+          let functionSignature = contract_721.methods
+            .mintToCaller(
+              signerAddress,
+              "https://gateway.pinata.cloud/ipfs/" + ipfsHash
+            )
+            .encodeABI();
 
           let message = {};
           message.nonce = parseInt(nonce);
@@ -153,19 +167,19 @@ const Form = ({
           const dataToSign = JSON.stringify({
             types: {
               EIP712Domain: domainType,
-              MetaTransaction: metaTransactionType
+              MetaTransaction: metaTransactionType,
             },
             domain: domainData721,
             primaryType: "MetaTransaction",
-            message: message
+            message: message,
           });
 
           const rpc = {
             jsonrpc: "2.0",
             id: 999999999999,
             method: "eth_signTypedData_v4",
-            params: [signerAddress, dataToSign]
-          }
+            params: [signerAddress, dataToSign],
+          };
 
           const txnhash = await web3.currentProvider.sendAsync(
             rpc,
@@ -173,32 +187,47 @@ const Form = ({
               //console.log(response)
               let { r, s, v } = getSignatureParameters(response.result);
 
-              const tx = await contract_721.methods.executeMetaTransaction(signerAddress,
-                functionSignature, r, s, v)
+              const tx = await contract_721.methods
+                .executeMetaTransaction(
+                  signerAddress,
+                  functionSignature,
+                  r,
+                  s,
+                  v
+                )
                 .send({ from: signerAddress })
                 .once("confirmation", (confirmationNumber, receipt) => {
                   //console.log(confirmationNumber)
                   //console.log(receipt)
-                  console.log('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]));
-                  setArkaneUrl('0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/' + parseInt(receipt.events.Transfer.raw.topics[3]));
+                  console.log(
+                    "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
+                      parseInt(receipt.events.Transfer.raw.topics[3])
+                  );
+                  setArkaneUrl(
+                    "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
+                      parseInt(receipt.events.Transfer.raw.topics[3])
+                  );
                   setTrsHash(receipt.transactionHash);
                 })
                 .on("error", (error) => {
-                  console.log(error)
+                  console.log(error);
                   setOpen(true);
-                  setErr('Transaction failed');
-                })
+                  setErr("Transaction failed");
+                });
               //console.log(tx)
               setIsLoading(false);
               toast("NFT Minted", { type: "success" });
             }
-          )
-        } else if (nftType === 'ERC1155') {
+          );
+        } else if (nftType === "ERC1155") {
+          contract_1155.handleRevert = true; // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
 
-          contract_1155.handleRevert = true // https://web3js.readthedocs.io/en/v1.3.4/web3-eth.html#handlerevert
-
-          let nonce = await contract_1155.methods.getNonce(signerAddress).call();
-          let functionSignature = contract_1155.methods.mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash).encodeABI();
+          let nonce = await contract_1155.methods
+            .getNonce(signerAddress)
+            .call();
+          let functionSignature = contract_1155.methods
+            .mintTocaller(signerAddress, ercTwoNum, encodedParams, ipfsHash)
+            .encodeABI();
 
           let message = {};
           message.nonce = parseInt(nonce);
@@ -208,46 +237,58 @@ const Form = ({
           const dataToSign = JSON.stringify({
             types: {
               EIP712Domain: domainType,
-              MetaTransaction: metaTransactionType
+              MetaTransaction: metaTransactionType,
             },
             domain: domainData1155,
             primaryType: "MetaTransaction",
-            message: message
+            message: message,
           });
 
           const rpc = {
             jsonrpc: "2.0",
             id: 999999999999,
             method: "eth_signTypedData_v4",
-            params: [signerAddress, dataToSign]
-          }
+            params: [signerAddress, dataToSign],
+          };
 
           const txnhash = web3.currentProvider.sendAsync(
             rpc,
             async function (error, response) {
-              console.log(response)
+              console.log(response);
               let { r, s, v } = getSignatureParameters(response.result);
 
-              const tx = contract_1155.methods.executeMetaTransaction(signerAddress,
-                functionSignature, r, s, v)
+              const tx = contract_1155.methods
+                .executeMetaTransaction(
+                  signerAddress,
+                  functionSignature,
+                  r,
+                  s,
+                  v
+                )
                 .send({ from: signerAddress })
                 .once("confirmation", (confirmationNumber, receipt) => {
                   //console.log(confirmationNumber)
                   //console.log(receipt)
-                  console.log('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
-                  setArkaneUrl('0xfd1dBD4114550A867cA46049C346B6cD452ec919/' + parseInt(receipt.events.TransferSingle.returnValues[3]));
+                  console.log(
+                    "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
+                      parseInt(receipt.events.TransferSingle.returnValues[3])
+                  );
+                  setArkaneUrl(
+                    "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
+                      parseInt(receipt.events.TransferSingle.returnValues[3])
+                  );
                   setTrsHash(receipt.transactionHash);
                 })
                 .on("error", (error) => {
-                  console.log(error)
+                  console.log(error);
                   setOpen(true);
-                  setErr('Transaction failed');
-                })
+                  setErr("Transaction failed");
+                });
               // console.log(tx)
               setIsLoading(false);
               toast("NFT Minted", { type: "success" });
             }
-          )
+          );
         } else {
           validateName();
           validateDesc();
@@ -259,7 +300,6 @@ const Form = ({
             // } else if (networkId !== 80001 && networkId !== 137) {
             //   setOpen(true);
             //   setErr("");
-
           } else {
             setOpen(true);
             setErr("Enter all mandatory fields");
@@ -267,343 +307,408 @@ const Form = ({
         }
       }
     }
-  }
+  };
 
   return (
-    <form className={classes.root} noValidate autoComplete="off" onSubmit={onSubmit}>
-
-      {/* Left Container */}
-      <div className={classes.uploadContainer}>
-        <div style={{ margin: imgSrc ? '50px 0px' : '25% auto' }}>
-          {
-            imgSrc ?
-              <div><img src={imgSrc} className={classes.previewImg} alt="preview-img" /></div>
-              :
-              <img src="img/upload.svg" alt="upload" />
-          }
-          {
-            !imgSrc &&
-            <React.Fragment>
-              <Typography variant="h6" className={classes.uploadTitle}>
-                Upload your file here
-              </Typography>
-              <Typography variant="h6" className={classes.uploadTitle2}>
-                JPG, PNG, MP4, PDF or HTML  videos accepted.
-                10MB limit.
-              </Typography>
-            </React.Fragment>
-          }
-          <input accept="audio/*, video/*, image/*, .html, .pdf" id="upload-file" onChange={handleFile} type='file' hidden />
-          <label htmlFor="upload-file">
-            <Button component="span" className={classes.uploadBtn}>
-              {file ? file.name : 'Click to upload'}
-            </Button>
-          </label>
-          {errors.file &&
-            <Typography variant="h6" className={classes.errUpload}>
-              {errors.file}
-            </Typography>
-          }
-        </div>
-      </div>
-
-      {/* Divider Line */}
-      <div className={classes.divider}></div>
-
-      {/* Right Side Container */}
-      <div className={classes.rightContainer}>
-        <div className={classes.formTitle}>
-          <label className={classes.formTitleLabel}>Title</label>
-          <input
-            type="text"
-            style={{ border: errors.name ? '1px solid tomato' : '1px solid black' }}
-            placeholder="Hall of Fame"
-            className={classes.formGroupInput}
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setErr('')
-              setErrors(pS => ({ ...pS, name: '' }))
-            }}
-            onBlur={validateName}
-            required
-          />
-          {errors.name && <p className={classes.error}>{errors.name}</p>}
-        </div>
-        <div className={classes.formTitle}>
-          <label className={classes.formTitleLabel}>Description</label>
-          <textarea
-            type="text"
-            style={{ border: errors.desc ? '1px solid tomato' : '1px solid black' }}
-            className={classes.formGroupInputDesc}
-            value={desc}
-            placeholder="A description about your NFT"
-            onChange={(e) => {
-              setErrors(pS => ({ ...pS, desc: '' }));
-              setErr('')
-              setDesc(e.target.value)
-            }}
-            onBlur={validateDesc}
-            required
-          ></textarea>
-          {errors.desc && <p className={classes.error}>{errors.desc}</p>}
-        </div>
-
-        <div className={classes.formType}>
-          <div className={classes.formTypeBtnGroup}>
-            <label className={classes.formTitleLabel}>NFT Type</label>
-            <div className={classes.btnGrp}>
-              <Button
-                className={classes.formTypeButton}
-                disabled={nftType === 'ERC721' ? true : false}
-                onClick={() => {
-                  setErcTwoNum(1);
-                  setNftType('ERC721')
-                }}>
-                ERC721
-              </Button>
-              <Button className={classes.formTypeButton}
-                disabled={nftType === 'ERC1155' ? true : false}
-                onClick={() => setNftType('ERC1155')}>
-                ERC1155
-              </Button>
-            </div>
+    <div className={classes.formSection}>
+      <Container className={classes.container}>
+        <div className={classes.formContainer}>
+          <div className="form-title">
+            <h3>Mint your NFT</h3>
           </div>
-          <div className={classes.formTitle}>
-            <label className={classes.formTitleLabel}>Quantity</label>
-            <input
-              type="number"
-              placeholder="1"
-              disabled={nftType === 'ERC1155' ? false : true}
-              className={classes.formGroupInput}
-              value={ercTwoNum}
-              onChange={(e) => setErcTwoNum(e.target.value)}
-            />
-          </div>
-        </div>
+          <form
+            noValidate
+            autoComplete="off"
+            onSubmit={onSubmit}
+            className={classes.form}
+          >
+            <Grid container spacing={3}>
+              {/* file upload section */}
+              <Grid item xs={12} md={6}>
+                <div className={classes.uploadSection}>
+                  <label className={classes.label} htmlFor="upload-file">
+                    Upload
+                  </label>
+                  <div className={classes.drag}>
+                    <input
+                      accept="audio/*, video/*, image/*, .html, .pdf"
+                      id="upload-file"
+                      onChange={handleFile}
+                      type="file"
+                      hidden
+                    />
+                    <p>
+                      {/* Drop your file here or{" "} */}
+                      <label htmlFor="upload-file">Browse file</label>
+                    </p>
+                    <br />
+                    <p>
+                      Supports JPG, PNG and MP4 videos. Max file size : 10MB.
+                    </p>
+                    {errors.file && <p className="imgErr">{errors.file}</p>}
+                  </div>
+                  {imgSrc && (
+                    <div className={classes.imgPreviewContainer}>
+                      <img src={imgSrc} alt="preview-img" />
+                      <p>
+                        <span>{file.name}</span>
+                        <span>
+                          {file.size > 100000
+                            ? `${file.size / 100000} MB`
+                            : file.size > 1000
+                            ? `${file.size / 1000} KB`
+                            : `${file.size} MB`}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </Grid>
 
-        <div className={classes.formTitle} style={{ display: 'flex' }}>
-          <label className={classes.formTitleLabel} style={{ marginBottom: 0, marginRight: 30 }}>
-            Content is 18+
-          </label>
-          <Checkbox
-            checked={adult}
-            onChange={(e) => setAdult(e.target.checked)}
-            color="primary"
-            inputProps={{ 'aria-label': 'secondary checkbox' }}
-          />
-        </div>
+              {/* input section */}
+              <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
+                  <div className={classes.inputContainer}>
+                    <label htmlFor="name">Title</label>
+                    <input
+                      type="text"
+                      className={`${errors.name ? "inputErr" : ""}`}
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        setErr("");
+                        setErrors((pS) => ({ ...pS, name: "" }));
+                      }}
+                      onBlur={validateName}
+                      required
+                      id="name"
+                    />
+                    {errors.name && (
+                      <p className={classes.inputErrMsg}>{errors.name}</p>
+                    )}
+                  </div>
+                </Grid>
 
-        <div className={classes.formTitle}>
-          <label className={classes.formTitleLabel}>Social Media URL (optional)</label>
-          <input
-            type="url"
-            placeholder="https://twitter.com/example"
-            className={classes.formGroupInput}
-            value={surl}
-            pattern="https?://.+"
-            onChange={(e) => setSurl(e.target.value)}
-          />
-        </div>
+                <Grid item xs={12}>
+                  <div className={classes.inputContainer}>
+                    <label htmlFor="description">Description</label>
+                    <textarea
+                      type="text"
+                      value={desc}
+                      className={`${errors.desc ? "inputErr" : ""}`}
+                      style={{ minHeight: "100px" }}
+                      onChange={(e) => {
+                        setErrors((pS) => ({ ...pS, desc: "" }));
+                        setErr("");
+                        setDesc(e.target.value);
+                      }}
+                      onBlur={validateDesc}
+                      required
+                      id="description"
+                    ></textarea>
+                    {errors.desc && (
+                      <p className={classes.inputErrMsg}>{errors.desc}</p>
+                    )}
+                  </div>
+                </Grid>
 
-        <div className={classes.lastSec}>
-          <div className={classes.note}>
-            Once your NFT is minted on the Polygon blockchain, you will not
-            be able to edit or update any of its information.
-          </div>
-          <Button type="submit" disabled={imgHash ? false : true} className={classes.submit}>Submit</Button>
-        </div>
-      </div>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <p className={classes.label}>NFT Type</p>
+                    <div className={classes.nftBtnContainer}>
+                      <Button
+                        className={classes.nftBtn}
+                        disabled={nftType === "ERC721" ? true : false}
+                        onClick={() => {
+                          setErcTwoNum(1);
+                          setNftType("ERC721");
+                        }}
+                      >
+                        ERC721
+                      </Button>
+                      <Button
+                        className={classes.nftBtn}
+                        disabled={nftType === "ERC1155" ? true : false}
+                        onClick={() => setNftType("ERC1155")}
+                      >
+                        ERC1155
+                      </Button>
+                    </div>
+                  </Grid>
 
-    </form>
+                  <Grid item xs={6}>
+                    <div className={classes.inputContainer}>
+                      <label htmlFor="quantity">Quantity</label>
+                      <input
+                        type="number"
+                        placeholder="1"
+                        disabled={nftType === "ERC1155" ? false : true}
+                        value={ercTwoNum}
+                        onChange={(e) => setErcTwoNum(e.target.value)}
+                        id="quantity"
+                      />
+                    </div>
+                  </Grid>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <div className={classes.inputContainer}>
+                    <label htmlFor="sm-url">
+                      Social Media URL <span>(optional)</span>
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://twitter.com/example"
+                      value={surl}
+                      pattern="https?://.+"
+                      onChange={(e) => setSurl(e.target.value)}
+                      id="sm-url"
+                    />
+                  </div>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <div className={classes.flex}>
+                    <Checkbox
+                      checked={adult}
+                      onChange={(e) => setAdult(e.target.checked)}
+                      color="primary"
+                      inputProps={{ "aria-label": "secondary checkbox" }}
+                      className={classes.checkbox}
+                      id="adult-checkbox"
+                    />
+                    <label
+                      className={classes.labelSmall}
+                      htmlFor="adult-checkbox"
+                    >
+                      Content is 18+
+                    </label>
+                  </div>
+                </Grid>
+
+                <p className={classes.note}>
+                  Once your NFT is minted on the Polygon blockchain, you will
+                  not be able to edit or update any of its information.
+                </p>
+
+                <Button
+                  type="submit"
+                  disabled={imgHash ? false : true}
+                  className={`${classes.btn} ${classes.filled}`}
+                >
+                  Mint NFT
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </div>
+      </Container>
+    </div>
   );
-}
+};
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    [theme.breakpoints.down('md')]: {
-      flexDirection: 'column'
-    },
+  ...theme.overrides.mui,
+  ...theme.overrides.formStyle,
+  formSection: {
+    backgroundColor: "#F4F7F9",
+    paddingBottom: "70px",
   },
-  uploadContainer: {
-    width: '48%',
-    backgroundColor: '#F3F4F7',
-    borderRadius: 20,
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
-      height: 'max-content',
-    },
-  },
-  // uploadContainerCenter: {
-  //   margin: '25% auto',
-  //   [theme.breakpoints.down('md')]: {
-  //     margin: 20,
-  //   },
-  // },
-  previewImg: {
-    maxWidth: 400,
-    maxHeight: 400,
-    width: '100%',
-    height: '100%',
-    objectFit: 'contain'
-  },
-  uploadTitle: {
-    fontSize: 18,
-    fontWeight: 500,
-  },
-  uploadTitle2: {
-    maxWidth: 300,
-    textAlign: 'center',
-    margin: 'auto',
-    fontSize: 16,
-    fontWeight: 400,
-  },
-  uploadBtn: {
-    maxWidth: 300,
-    background: '#061024',
-    padding: '10px 16px',
-    fontSize: 16,
-    color: '#FFFFFF',
-    borderRadius: 37,
-    margin: '20px auto',
-    '&:hover': {
-      background: '#061024',
-    }
-  },
-  errUpload: {
-    maxWidth: 300,
-    textAlign: 'center',
-    margin: 'auto',
-    color: 'tomato',
-    fontSize: 16,
-    fontWeight: 400,
-  },
-  // uploadBtnName: {
-  //   overflow: 'hidden',
-  //   textOverflow: 'ellipsis',
-  //   whiteSpace: 'nowrap',
-  // },
+  formContainer: {
+    borderRadius: "16px",
+    top: "-70px",
+    filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
+    position: "relative",
+    overflow: "hidden",
 
-  divider: {
-    border: '1px solid #DCDFE6',
-    [theme.breakpoints.down('md')]: {
-      display: 'none'
+    "& .form-title": {
+      padding: "0 26px",
+      lineHeight: "70px",
+      height: "70px",
+      borderBottom: "1px solid #E8E8E8",
+      backgroundColor: "#F9F9FE",
+      fontSize: "18px",
+      fontWeight: "600",
+
+      "& h3": {
+        margin: 0,
+      },
+    },
+  },
+  form: {
+    backgroundColor: "#ffffff",
+    padding: "26px 26px 50px",
+    width: "100%",
+  },
+  // file upload section
+  uploadSection: {
+    // padding: "26px 30px 30px",
+    // backgroundColor: "#fff",
+    // border: "1.5px solid #e7e7e7",
+    // borderRadius: "10px",
+    // height: "100%",
+
+    // "& h2": {
+    //   color: "#61677e",
+    //   textAlign: "left",
+    //   fontWeight: "700",
+    //   margin: "0 0 5px 0",
+    //   fontSize: "17px",
+    // },
+
+    "& p": {
+      fontSize: "12px",
+      fontWeight: "600",
+      color: "#61677e",
+      textAlign: "left",
+      margin: "0 0 20px 0",
     },
   },
 
-  rightContainer: {
-    width: '48%',
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
+  drag: {
+    // height: 140px;
+    borderRadius: "6px",
+    border: "1px dashed #C7CBD9",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignTtems: "center",
+    padding: "60px 0",
+    marginTop: "5px",
+
+    "& p": {
+      textAlign: "center",
+      color: "#939bba",
+      fontSize: "14px",
+      fontWeight: "600",
+      margin: "0",
+
+      "& label": {
+        color: "#8247e5",
+        textDecoration: "underline",
+        cursor: "pointer",
+
+        "&:hover": {
+          color: "#7533e2",
+        },
+      },
+
+      "&.imgErr": {
+        textAlign: "center",
+        color: "#ff0000",
+        fontSize: "12px",
+        marginTop: "10px",
+      },
     },
-  },
-  formTitle: {
-    margin: '0 auto 1rem auto',
-    padding: '0.25rem'
-  },
-  formTitleLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: 18,
-    fontWeight: 500,
-    marginBottom: 10
-  },
-  formGroupInput: {
-    width: '100%',
-    height: 54,
-    fontSize: 16,
-    padding: '0.3rem 0.75rem',
-    border: '1px solid black',
-    borderRadius: '0.25rem',
-    outline: 'none',
-  },
-  formGroupInputDesc: {
-    resize: 'none',
-    width: '100%',
-    height: 100,
-    fontSize: 16,
-    margin: 0,
-    padding: '1.1rem 0.75rem',
-    borderRadius: '0.25rem',
-    outline: 'none',
   },
 
-  formType: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  },
-  formTypeBtnGroup: {
-    margin: 0,
-    padding: 0
-  },
-  btnGrp: {
-    display: 'flex',
-    height: 52,
-    justifyContent: 'space-between',
-    backgroundColor: '#F3F4F7',
-    padding: 4,
-    margin: 'auto',
-    borderRadius: 8
-  },
-  formGroupFile: {
-    display: 'flex'
-  },
-  formTypeButton: {
-    width: 102,
-    height: 44,
-    marginRight: 4,
-    fontSize: 17,
-    letterSpacing: "-0.01em",
-    border: 0,
-    color: 'rgba(0, 0, 0, 0.26)',
-    backgroundColor: '#F3F4F7',
-    '&:hover': {
-      backgroundColor: '#fffafa',
+  imgPreviewContainer: {
+    width: "100%",
+    display: "flex",
+    marginTop: "20px",
+    padding: "10px",
+    backgroundColor: "white",
+    borderRadius: "6px",
+    border: "1px solid #c7cbd9",
+
+    "& img": {
+      height: "60px",
+      width: "60px",
+      objectFit: "cover",
+      marginRight: "20px",
+      borderRadius: "5px",
+      border: "1px solid #c7cbd9",
     },
+
+    "& p": {
+      display: "flex",
+      flexDirection: "column",
+      margin: "0",
+
+      "& span": {
+        "&:first-child": {
+          fontWeight: "bold",
+          marginBottom: "3px",
+          fontSize: "15px",
+        },
+      },
+    },
+  },
+
+  nftBtnContainer: {
+    backgroundColor: "white",
+    border: "1px solid #C7CBD9",
+    display: "flex",
+    padding: "5px",
+    borderRadius: "5px",
+    position: "relative",
+    height: "50px",
+    marginTop: "5px",
+  },
+
+  nftBtn: {
+    height: "50px",
+    width: "50%",
+    height: "calc(50px - 12px)",
+    borderRadius: "5px",
+    border: "0",
+    outline: "0",
+    cursor: "pointer",
+    fontWeight: "600",
+
+    "&:first-child ": {
+      marginRight: "5px",
+    },
+
     "&:disabled": {
-      backgroundColor: '#FFFFFF',
-      border: 0,
-      color: 'rgba(0, 0, 0, 1)',
-      boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
-    }
-  },
-  lastSec: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    [theme.breakpoints.down('md')]: {
-      display: 'block',
-      margin: '30px 0'
+      backgroundColor: "#3E3B51",
+      color: "white",
+    },
+
+    "&:enabled": {
+      backgroundColor: "#F6F6FF",
     },
   },
+
+  inputErrMsg: {
+    position: "absolute",
+    margin: 0,
+    zIndex: 2,
+    top: "40px",
+    right: "15px",
+    color: "red",
+    fontWeight: "600",
+  },
+
+  label: {
+    color: "#7533e2",
+    fontSize: "14px",
+    fontWeight: "bold",
+    margin: 0,
+  },
+
+  flex: {
+    display: "flex",
+    alignItems: "center",
+    marginRight: "4px",
+  },
+  checkbox: {
+    width: "22px",
+    height: "22px",
+    borderColor: "#C7CBD9",
+    marginRight: "11px",
+  },
+  labelSmall: {
+    fontSize: "14px",
+    color: "#61677E",
+    lineHeight: "21px",
+    fontWeight: "600",
+  },
+
   note: {
-    color: '#6E798F',
-    maxWidth: 370,
-    margin: 'auto 0',
-    [theme.breakpoints.down('md')]: {
-      margin: 'auto',
-      marginBottom: 20
-    },
-  },
-  submit: {
-    background: '#8247E5',
-    padding: '11px 30px',
-    fontSize: 16,
-    color: '#FFFFFF',
-    borderRadius: 37,
-    marginTop: 10,
-    '&:hover': {
-      background: '#8247E5',
-    },
-    '&:disabled': {
-      background: '#9c67f5',
-    }
-  },
-  error: {
-    margin: '2px 0px',
-    textAlign: 'left',
-    color: 'tomato'
+    fontSize: "12px",
+    color: "#61677e",
+    marginTop: '40px',
   },
 }));
 
