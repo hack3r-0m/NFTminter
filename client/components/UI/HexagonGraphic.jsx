@@ -17,7 +17,7 @@ const HexagonGraphic = ({ color }) => {
         <path
           d="M74 13.7017L124.952 43.1188C126.19 43.8333 126.952 45.1538 126.952 46.5829V105.417C126.952 106.846 126.19 108.167 124.952 108.881L74 138.298C72.7624 139.013 71.2376 139.013 70 138.298L19.0481 108.881C17.8105 108.167 17.0481 106.846 17.0481 105.417V46.5829C17.0481 45.1538 17.8105 43.8333 19.0481 43.1188L70 13.7017C71.2376 12.9872 72.7624 12.9872 74 13.7017Z"
           stroke={color}
-          stroke-width="20"
+          strokeWidth="20"
         />
       </g>
       <defs>
@@ -28,9 +28,9 @@ const HexagonGraphic = ({ color }) => {
           width="143.904"
           height="159.668"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"

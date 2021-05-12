@@ -13,7 +13,7 @@ import HexagonGraphic from "./HexagonGraphic";
 
 const ResultModal = ({ minter, triggerModal, setTriggerModal, data }) => {
   const classes = useStyles();
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timeLeft, setTimeLeft] = useState(90);
 
   const url = "https://explorer-mainnet.maticvigil.com/tx/";
 
@@ -75,7 +75,8 @@ const ResultModal = ({ minter, triggerModal, setTriggerModal, data }) => {
                   <button
                     href={`https://arkane.market/inventory/MATIC/${data.arkaneUrl}`}
                     target="_blank"
-                    className={classes.btn}
+                    className={`${classes.btn} ${classes.filled}`}
+                    style={{margin:'auto',display:'flex'}}
                   >
                     View on Arkane
                   </button>

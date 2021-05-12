@@ -180,15 +180,31 @@ const theme = createMuiTheme({
     },
     modalStyle: {
       btn: {
-        fontSize: "14px",
-        backgroundColor: "#3e3b51",
-        color: "white",
-        textTransform: "Capitalize",
-        padding: "5px 15px",
+        height: "44px",
+        lineHeight: "44px",
+        padding: "0 20px",
+        border: "1px solid #8247E5",
+        borderRadius: "4px",
+        display: "inline-flex",
+        textTransform: "capitalize",
+        fontWeight: "500",
+        fontSize: "16px",
+        position: "relative",
+        cursor:'pointer',
+
+        "&:first-child": {
+          marginRight: "14px",
+        },
 
         "&:hover": {
-          backgroundColor: "#000",
+          backgroundColor: "#7533e2",
+          color: "white",
+          borderColor: "#7533e2",
         },
+      },
+      filled: {
+        backgroundColor: "#8247E5",
+        color: "white",
       },
       modalContainer: {
         display: "flex",
