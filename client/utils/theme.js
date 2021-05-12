@@ -179,6 +179,17 @@ const theme = createMuiTheme({
       },
     },
     modalStyle: {
+      btn: {
+        fontSize: "14px",
+        backgroundColor: "#3e3b51",
+        color: "white",
+        textTransform: "Capitalize",
+        padding: "5px 15px",
+
+        "&:hover": {
+          backgroundColor: "#000",
+        },
+      },
       modalContainer: {
         display: "flex",
         justifyContent: "center",

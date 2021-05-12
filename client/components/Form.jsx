@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+// components
+import ResultModal from "./UI/ResultModal";
+import ErrorBox from "./UI/ErrorBox";
+
+// material ui
 import {
   Button,
-  Typography,
   Container,
   Checkbox,
   Grid,
@@ -30,7 +34,6 @@ const Form = ({
   contract_721,
   setIsLoading,
   setTrsHash,
-  setErr,
   setOpen,
   setArkaneUrl,
   providerMetamask,
@@ -46,6 +49,7 @@ const Form = ({
   const [imgHash, setImgHash] = useState("");
   const [nftType, setNftType] = useState("ERC721");
   const [ercTwoNum, setErcTwoNum] = useState(1);
+  const [err, setErr] = useState("");
   const [errors, setErrors] = useState({
     name: "",
     desc: "",
@@ -495,11 +499,13 @@ const Form = ({
                   type="submit"
                   disabled={imgHash ? false : true}
                   className={`${classes.btn} ${classes.filled}`}
+                  style={{ marginBottom: "30px" }}
                 >
                   Mint NFT
                 </Button>
               </Grid>
             </Grid>
+            {err && <ErrorBox message={err} />}
           </form>
         </div>
       </Container>
@@ -537,25 +543,11 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     backgroundColor: "#ffffff",
-    padding: "26px 26px 50px",
+    padding: "26px",
     width: "100%",
   },
   // file upload section
   uploadSection: {
-    // padding: "26px 30px 30px",
-    // backgroundColor: "#fff",
-    // border: "1.5px solid #e7e7e7",
-    // borderRadius: "10px",
-    // height: "100%",
-
-    // "& h2": {
-    //   color: "#61677e",
-    //   textAlign: "left",
-    //   fontWeight: "700",
-    //   margin: "0 0 5px 0",
-    //   fontSize: "17px",
-    // },
-
     "& p": {
       fontSize: "12px",
       fontWeight: "600",
@@ -708,7 +700,7 @@ const useStyles = makeStyles((theme) => ({
   note: {
     fontSize: "12px",
     color: "#61677e",
-    marginTop: '40px',
+    marginTop: "40px",
   },
 }));
 

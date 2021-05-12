@@ -1,7 +1,7 @@
 // There are three different outputs of Result Modal for Mapping Form, ETM Form and MTE Form.
 // mapping, ethToMatic and maticToEth are the props to be passed.
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // material ui
 import { Modal } from "@material-ui/core";
@@ -9,23 +9,25 @@ import { Close } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 // images
-import thumbsUp from "../../images/thumbs-up.png";
-import thumbsDown from "../../images/thumbs-down.png";
 import HexagonGraphic from "./HexagonGraphic";
 
-const ResultModal = ({
-  mapping,
-  maticToEth,
-  ethToMatic,
-  triggerModal,
-  setTriggerModal,
-  data,
-}) => {
+const ResultModal = ({ minter, triggerModal, setTriggerModal, data }) => {
   const classes = useStyles();
+  const [timeLeft, setTimeLeft] = useState(10);
+
+  const url = "https://explorer-mainnet.maticvigil.com/tx/";
 
   const closeModal = () => {
     setTriggerModal(false);
   };
+
+  useEffect(() => {
+    if (!timeLeft) return;
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
 
   return (
     <Modal
@@ -40,70 +42,36 @@ const ResultModal = ({
         </div>
         <div className={classes.graphicSection}>
           <div className="iconContainer">
-            <img
-              src={mapping ? (data.mapped ? thumbsUp : thumbsDown) : thumbsUp}
-              alt="thumb icon"
-            />
-            <HexagonGraphic
-              color={
-                mapping ? (data.mapped ? "#1DBA2D" : "#BA301D") : "#1DBA2D"
-              }
-            />
+            <img src="/images/thumbs-up.png" alt="thumb icon" />
+            <HexagonGraphic color="#1DBA2D" />
           </div>
         </div>
         <div className={classes.textSection}>
-          {/* for FormMapping.jsx */}
-          {mapping && (
-            <p>
-              Address <span>{data.address}</span>
-              is {data.mapped ? "mapped" : "not yet mapped"}.
-            </p>
-          )}
-
           {/* for FormMTE.jsx */}
-          {maticToEth && (
-            <p>
-              Transaction hash:{" "}
-              <span>
-                <a
-                  href={`${data.url}${data.address}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {data.address}
-                </a>
-              </span>
-            </p>
-          )}
-
-          {/* for FormETM.jsx */}
-          {ethToMatic && (
+          {minter && (
             <>
               <p>
-                Tx1 → Approve:{" "}
+                Transaction hash:{" "}
                 <span>
                   <a
-                    href={`${data.url}${data.addressOne}`}
+                    href={`${url}${data.address}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {data.addressOne}
+                    {data.address}
                   </a>
                 </span>
               </p>
-              <p>
-                Tx2 → Transfer:{" "}
-                <span>
-                  {" "}
-                  <a
-                    href={`${data.url}${data.addressTwo}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {data.addressTwo}
-                  </a>
-                </span>
-              </p>
+              <p>Wait {timeLeft} seconds for listing on Arkane</p>
+              {data.arkaneUrl && timeLeft === 0 && (
+                <button
+                  href={`https://arkane.market/inventory/MATIC/${data.arkaneUrl}`}
+                  target="_blank"
+                  className={`${classes.btn} ${classes.filled}`}
+                >
+                  View on Arkane
+                </button>
+              )}
             </>
           )}
 

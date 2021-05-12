@@ -6,7 +6,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from  "../utils/theme";
 
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Footer from "../components/UI/Footer";
 
 const App = ({ Component, pageProps }) => {
   const [contract_1155, setContract_1155] = useState(null);
