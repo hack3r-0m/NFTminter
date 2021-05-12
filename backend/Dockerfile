@@ -9,7 +9,9 @@ COPY . /app
 # install dependencies
 RUN npm install
 
+RUN npm install pm2 -g
+
 # start app
-RUN npm run build
-EXPOSE 80
-CMD npm run start
+EXPOSE 8080
+
+CMD pm2 start --name backend server.js -i max
