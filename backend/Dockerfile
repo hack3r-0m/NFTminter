@@ -9,8 +9,9 @@ COPY . /app
 # install dependencies
 RUN npm install
 
-RUN npm i pm2 -g
+RUN npm install pm2 -g
 
 # start app
 EXPOSE 8080
-CMD pm2 start --name minterbackend server.js -i max
+
+CMD pm2 start --name backend server.js -i max
