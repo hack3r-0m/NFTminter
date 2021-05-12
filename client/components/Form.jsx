@@ -338,8 +338,8 @@ const Form = ({
                       hidden
                     />
                     <p>
-                      Drop your file here or{" "}
-                      <label htmlFor="upload-file">browse</label>
+                      {/* Drop your file here or{" "} */}
+                      <label htmlFor="upload-file">Browse file</label>
                     </p>
                     <br />
                     <p>
