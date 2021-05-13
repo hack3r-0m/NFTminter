@@ -37,7 +37,7 @@ const Footer = () => {
                 </div>
               </a>
               <a
-                href="https://twitter.com/0xPolygon"
+                href="https://discord.gg/ZnakscDVGe"
                 target="_blank"
                 rel="noreferrer"
               >
