@@ -3,10 +3,9 @@ import Link from 'next/link';
 import { useRouter } from "next/router";
 
 import { AppBar, Container } from "@material-ui/core";
-// import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuIcon from "@material-ui/icons/Menu";
-import CollectionsIcon from '@material-ui/icons/Collections';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { BridgeIcon, MintIcon } from "./UI/Icons";
 import dynamic from "next/dynamic";
@@ -48,10 +47,10 @@ const Navbar = ({
               className={classes.menuItemContainer}
               ref={menuItemContainerRef}
             >
-              <a href="https://polygon-nft-bridge.netlify.app/" className="menuItem">
+              {/* <a href="https://polygon-nft-bridge.netlify.app/" className="menuItem">
                 <BridgeIcon className="menuItemIcon active" />
                 Bridge
-              </a>
+              </a> */}
               <Link href="/" style={{ display: "flex" }}>
                 <a className={router.pathname == "/" ? "menuItem active" : "menuItem"}>
                   <MintIcon className="menuItemIcon" />
@@ -60,7 +59,7 @@ const Navbar = ({
               </Link>
               <Link href="/account" style={{ display: "flex" }}>
                 <a className={router.pathname == "/account" ? "menuItem active" : "menuItem"}>
-                  <CollectionsIcon className="menuItemIcon" />
+                  <AccountCircleIcon className="menuItemIcon" />
                   Account
                 </a>
               </Link>
@@ -89,22 +88,13 @@ const Navbar = ({
 }
 
 const useStyles = makeStyles((theme) => ({
+  ...theme.overrides.mui,
   nav: {
     height: "80px",
     backgroundColor: "#fff",
     boxShadow: "none",
     borderBottom: "2px solid #7533E2",
-  },
-  container: {
-    maxWidth: "1080px",
-    margin: "auto",
-    padding: "0",
-    ["@media (max-width:1120px)"]: {
-      padding: "0 20px",
-    },
-    ["@media (max-width:599px)"]: {
-      padding: "0 15px",
-    },
+    position: "relative",
   },
   flexContainer: {
     display: "flex",
@@ -148,6 +138,7 @@ const useStyles = makeStyles((theme) => ({
       padding: "20px 0",
       height: "auto",
       transition: "all 0.5s ease",
+      borderBottom: "2px solid #7533E2",
     },
 
     // menu items
@@ -171,7 +162,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         borderColor: "#8247E5",
 
-        "& svg": {
+        "& svg":{
           fill: "#EDF0F7",
         }
       },
@@ -181,7 +172,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         borderColor: "#8247E5",
 
-        "& svg": {
+        "& svg":{
           fill: "#EDF0F7",
         }
       },
@@ -189,15 +180,17 @@ const useStyles = makeStyles((theme) => ({
       "@media (max-width:859px)": {
         textAlign: "center",
         lineHeight: "50px",
+        marginRight: '0'
       },
-      // icons inside the menu Item
-      "& .menuItemIcon": {
-        width: "20px",
-        height: "20px",
-        fill: "#6E798F",
-        marginRight: "4px",
-        transition: 'none',
-      },
+    },
+
+    // icons inside the menu Item
+    "& .menuItemIcon": {
+      width: "20px",
+      height: "20px",
+      fill: "#6E798F",
+      marginRight: "4px",
+      transition: 'none',
     },
   },
   menuIcon: {

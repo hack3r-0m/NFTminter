@@ -53,9 +53,9 @@ const useStyles = makeStyles((theme) => ({
       opacity: "0.15",
     },
 
-    ["@media (max-width:959px)"]: {
-      paddingBottom: "120px",
-    },
+    // ["@media (max-width:959px)"]: {
+    //   paddingBottom: "120px",
+    // },
   },
   title: {
     color: "white",

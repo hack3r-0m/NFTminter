@@ -55,9 +55,8 @@ const Account = ({ signerAddress }) => {
             <h1 className={classes.title}>My account</h1>
           </Grid>
           {nftData.map((nft, i) => (
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={4} md={3} key={i}>
               <NFTCard
-                key={i}
                 image={nft.image}
                 name={nft.name}
                 type={nft.nftType}

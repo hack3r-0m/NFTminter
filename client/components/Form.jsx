@@ -412,7 +412,7 @@ const Form = ({
                 </Grid>
 
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <p className={classes.label}>NFT Type</p>
                     <div className={classes.nftBtnContainer}>
                       <Button
@@ -435,7 +435,7 @@ const Form = ({
                     </div>
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <div className={classes.inputContainer}>
                       <label htmlFor="quantity">Quantity</label>
                       <input
@@ -520,6 +520,9 @@ const useStyles = makeStyles((theme) => ({
   formSection: {
     backgroundColor: "#F4F7F9",
     paddingBottom: "70px",
+    ["@media (max-width:959px)"]: {
+      paddingBottom: 0,
+    },
   },
   formContainer: {
     borderRadius: "16px",
@@ -566,7 +569,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignTtems: "center",
-    padding: "60px 0",
+    padding: "60px 10px",
     marginTop: "5px",
 
     "& p": {
@@ -617,6 +620,8 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       flexDirection: "column",
       margin: "0",
+      wordBreak: 'break-all',
+      lineHeight:'normal',
 
       "& span": {
         "&:first-child": {
