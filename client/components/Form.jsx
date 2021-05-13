@@ -121,7 +121,6 @@ const Form = ({
       }
 
       // If Metamask use backend
-      console.log(`${process.env.base_url}/add`)
       if (providerMetamask) {
         if (adult) {
           const res = await axios.post(`${process.env.base_url}/add`, {
