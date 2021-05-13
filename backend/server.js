@@ -58,7 +58,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const corsConfig = {
   credentials: true,
-  origin: true,
+  origin: ["https://mintnft.today", "http://localhost:3000", "http://localhost:80"]
 };
 app.use(cors(corsConfig));
 
