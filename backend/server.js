@@ -56,11 +56,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-const corsConfig = {
-  credentials: true,
-  origin: ["https://mintnft.today", "http://localhost:3000", "http://localhost:80"]
-};
-app.use(cors(corsConfig));
+app.use(cors({credentials: true, origin: '*'}));
 
 app.get("/", async function (req, res) {
   res.send("NFT Minter Admin API");
