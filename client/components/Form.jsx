@@ -5,7 +5,13 @@ import axios from "axios";
 import ErrorBox from "./UI/ErrorBox";
 
 // material ui
-import { Button, Container, Checkbox, Grid, CircularProgress } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  Checkbox,
+  Grid,
+  CircularProgress,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
@@ -486,7 +492,7 @@ const Form = ({
 
                 <Button
                   type="submit"
-                  disabled={imgHash || !isLoading ? false : true}
+                  disabled={imgHash && !isLoading ? false : true}
                   className={`${classes.btn} ${classes.filled}`}
                   style={{ marginBottom: "30px" }}
                 >
