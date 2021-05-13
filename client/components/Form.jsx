@@ -121,9 +121,10 @@ const Form = ({
       }
 
       // If Metamask use backend
+      console.log(`${process.env.base_url}/add`)
       if (providerMetamask) {
         if (adult) {
-          const res = await axios.post("http://localhost:8080/add", {
+          const res = await axios.post(`${process.env.base_url}/add`, {
             minter: signerAddress,
             name: name,
             description: desc,
@@ -139,7 +140,7 @@ const Form = ({
           setTriggerModal(true);
           toast("NFT Added", { type: "success" });
         } else {
-          const res = await axios.post("http://localhost:8080/mint", {
+          const res = await axios.post(`${process.env.base_url}/mint`, {
             minter: signerAddress,
             type: nftType,
             uri: "https://gateway.pinata.cloud/ipfs/" + ipfsHash,
@@ -206,11 +207,11 @@ const Form = ({
                   //console.log(receipt)
                   console.log(
                     "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
-                      parseInt(receipt.events.Transfer.raw.topics[3])
+                    parseInt(receipt.events.Transfer.raw.topics[3])
                   );
                   setArkaneUrl(
                     "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
-                      parseInt(receipt.events.Transfer.raw.topics[3])
+                    parseInt(receipt.events.Transfer.raw.topics[3])
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
@@ -276,11 +277,11 @@ const Form = ({
                   //console.log(receipt)
                   console.log(
                     "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
-                      parseInt(receipt.events.TransferSingle.returnValues[3])
+                    parseInt(receipt.events.TransferSingle.returnValues[3])
                   );
                   setArkaneUrl(
                     "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
-                      parseInt(receipt.events.TransferSingle.returnValues[3])
+                    parseInt(receipt.events.TransferSingle.returnValues[3])
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
@@ -355,8 +356,8 @@ const Form = ({
                           {file.size > 100000
                             ? `${file.size / 100000} MB`
                             : file.size > 1000
-                            ? `${file.size / 1000} KB`
-                            : `${file.size} MB`}
+                              ? `${file.size / 1000} KB`
+                              : `${file.size} MB`}
                         </span>
                       </p>
                     </div>
@@ -621,7 +622,7 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: "column",
       margin: "0",
       wordBreak: 'break-all',
-      lineHeight:'normal',
+      lineHeight: 'normal',
 
       "& span": {
         "&:first-child": {
