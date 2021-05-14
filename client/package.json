@@ -8,6 +8,7 @@
     "start": "next start -p 80",
     "export": "next export"
   },
+  "proxy": "http://localhost:8080",
   "license": "MIT",
   "dependencies": {
     "@arkane-network/web3-arkane-provider": "^0.21.0",
