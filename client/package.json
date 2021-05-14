@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "author": "Aman Raj <archanaamanraj@gmail.com>",
   "scripts": {
-    "dev": "next",
+    "dev": "cross-env NODE_ENV=production node server.js",
     "build": "next build",
-    "start": "next start -p 80",
+    "start": "cross-env NODE_ENV=production node server.js",
     "export": "next export"
   },
   "license": "MIT",
@@ -16,8 +16,10 @@
     "@material-ui/icons": "^4.11.2",
     "@walletconnect/web3-provider": "^1.3.6",
     "axios": "^0.21.1",
+    "cross-env": "^7.0.3",
     "ethers": "^5.1.4",
     "form-data": "^4.0.0",
+    "http-proxy-middleware": "^2.0.0",
     "next": "^10.0.6",
     "react": "^17.0.1",
     "react-blockies": "^1.4.1",
