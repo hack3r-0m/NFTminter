@@ -62,7 +62,7 @@ app.get("/", async function (req, res) {
   res.send("NFT Minter Admin API");
 });
 
-app.get("/nonce", async function (req, res) {
+app.get("/api/nonce", async function (req, res) {
   try {
     const count = await addresses.countDocuments(
       { address: req.query.address },
@@ -79,7 +79,7 @@ app.get("/nonce", async function (req, res) {
   }
 });
 
-app.post("/authenticate", async function (req, res) {
+app.post("/api/authenticate", async function (req, res) {
   try {
     const { address, signature } = req.body;
     var result = await addresses.findOne({ address: address });
@@ -116,7 +116,7 @@ app.post("/authenticate", async function (req, res) {
   }
 });
 
-app.post("/logout", auth, async function (req, res) {
+app.post("/api/logout", auth, async function (req, res) {
   try {
     const result = await addresses.updateOne({ "address": req.headers.address },
       { $unset: { nonce: "", token: "", expires: "" } });
@@ -129,7 +129,7 @@ app.post("/logout", auth, async function (req, res) {
   }
 });
 
-app.post("/add", async function (req, res) {
+app.post("/api/add", async function (req, res) {
   try {
     const {
       minter,
@@ -160,7 +160,7 @@ app.post("/add", async function (req, res) {
   }
 });
 
-app.post("/mint", async function (req, res) {
+app.post("/api/mint", async function (req, res) {
   console.log("mint2", req.body);
   try {
     const { minter, uri, count, type } = req.body;
@@ -178,7 +178,7 @@ app.post("/mint", async function (req, res) {
   }
 });
 
-app.get("/all", auth, async function (req, res) {
+app.get("/api/all", auth, async function (req, res) {
   try {
     const result = await collection.find({}, { sort: { timestamp: 1 }, limit: 10 }).toArray();
     res.send(result);
@@ -188,7 +188,7 @@ app.get("/all", auth, async function (req, res) {
   }
 });
 
-app.get("/all/:page(\\d+)", auth, async function (req, res) {
+app.get("/api/all/:page(\\d+)", auth, async function (req, res) {
   try {
     const result = await collection.find({}, {
       sort: { timestamp: 1 }, limit: 10, skip: (parseInt(req.params.page) - 1) * 10
@@ -201,7 +201,7 @@ app.get("/all/:page(\\d+)", auth, async function (req, res) {
   }
 });
 
-app.post("/approve", auth, async function (req, res) {
+app.post("/api/approve", auth, async function (req, res) {
   try {
     const { id } = req.body;
     const item = await collection.findOne({ _id: ObjectId(id) });
@@ -223,7 +223,7 @@ app.post("/approve", auth, async function (req, res) {
   }
 });
 
-app.post("/decline", auth, async function (req, res) {
+app.post("/api/decline", auth, async function (req, res) {
   try {
     const { id } = req.body;
     // unpin from IPFS
@@ -260,6 +260,6 @@ async function generate_nonce(address) {
   return nonce;
 }
 
-app.listen(process.env.PORT || 8080, () => {
+app.listen(8080, () => {
   console.log("Server starting on port 8080...")
 });

@@ -34,7 +34,7 @@ const Admin = ({ item, token, signerAddress }) => {
   const decline = async (e, _id) => {
     try {
       setLoading(true);
-      const res = await axios.post(`api/decline`, {
+      const res = await axios.post(`/api/decline`, {
         id: _id,
         withCredentials: true,
         credentials: "include",

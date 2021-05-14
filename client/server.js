@@ -2,15 +2,25 @@ const express = require('express')
 const next = require('next')
 const { createProxyMiddleware } = require("http-proxy-middleware")
 
-const port = 80;
+const port = 80
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
+const apiPaths = {
+  '/api': {
+    target: 'http://localhost:8080',
+    pathRewrite: {
+      '^/api': '/api'
+    },
+    changeOrigin: true
+  }
+}
+
 app.prepare().then(() => {
   const server = express()
 
-  app.use('/api', proxy({ target: 'http://localhost:8080', changeOrigin: true }));
+  server.use('/api', createProxyMiddleware(apiPaths['/api']));
 
   server.all('*', (req, res) => {
     return handle(req, res)
