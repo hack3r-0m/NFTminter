@@ -1,3 +1,4 @@
+version: "3"
 services:
   client:
     build: ./client
@@ -9,3 +10,6 @@ services:
     build: ./backend
     ports:
       - "8080:8080"
+  nginx:
+    restart: always
+    build: ./nginx
