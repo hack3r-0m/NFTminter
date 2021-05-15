@@ -1,11 +1,15 @@
+version: "3"
 services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+  nginx:
+    restart: always
+    build: ./nginx
   client:
     build: ./client
     ports:
       - "80:80"
     depends_on:
       - backend
-  backend:
-    build: ./backend
-    ports:
-      - "8080:8080"
