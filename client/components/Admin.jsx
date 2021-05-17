@@ -12,7 +12,7 @@ const Admin = ({ item, token, signerAddress }) => {
     try {
       setLoading(true);
       console.log("Approving id", _id)
-      const res = await axios.post("http://127.0.0.1:8080/approve", {
+      const res = await axios.post(`/api/approve`, {
         id: _id,
         withCredentials: true,
         credentials: "include",
@@ -34,7 +34,7 @@ const Admin = ({ item, token, signerAddress }) => {
   const decline = async (e, _id) => {
     try {
       setLoading(true);
-      const res = await axios.post("http://127.0.0.1:8080/decline", {
+      const res = await axios.post(`/api/decline`, {
         id: _id,
         withCredentials: true,
         credentials: "include",

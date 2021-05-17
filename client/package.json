@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start -p 80",
+    "start": "next start -p 3000",
     "export": "next export"
   },
   "license": "MIT",
