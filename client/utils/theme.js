@@ -164,6 +164,13 @@ const theme = createMuiTheme({
           color: "white",
           borderColor: "#7533e2",
         },
+
+        "&:disabled": {
+          backgroundColor: '#bdc3c7',
+          borderColor: '#bdc3c7',
+          opacity: 0.65, 
+          color: 'white',
+        }
       },
       filled: {
         backgroundColor: "#8247E5",
