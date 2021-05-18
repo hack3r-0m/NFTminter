@@ -497,10 +497,10 @@ const Form = ({
                 <Button
                   type="submit"
                   disabled={imgHash && !isLoading ? false : true}
-                  className={`${classes.btn} ${classes.filled}`}
+                  className={`${classes.btn} ${classes.filled} ${isLoading && classes.btnWithLoader}`}
                   style={{ marginBottom: "30px" }}
                 >
-                  Mint NFT
+                  {isLoading?"minting...":'Mint NFT'}
                   {isLoading && (
                     <CircularProgress
                       className={`${classes.loading}`}

@@ -154,6 +154,7 @@ const theme = createMuiTheme({
         fontWeight: "600",
         fontSize: "16px",
         position: "relative",
+        transition: 'all 0.3s ease',
 
         "&:first-child": {
           marginRight: "14px",
@@ -168,9 +169,13 @@ const theme = createMuiTheme({
         "&:disabled": {
           backgroundColor: '#bdc3c7',
           borderColor: '#bdc3c7',
-          opacity: 0.65, 
+          // opacity: 0.65, 
           color: 'white',
         }
+      },
+      btnWithLoader: {
+        paddingLeft: '44px',
+        transition: 'all 0.3s ease',
       },
       filled: {
         backgroundColor: "#8247E5",
@@ -180,9 +185,8 @@ const theme = createMuiTheme({
         position: "absolute",
         display: "block",
         margin: "auto",
-        left: 0,
-        right: 0,
-        color: "white",
+        left: "10px",
+        color: "#7533e2",
       },
     },
     modalStyle: {
