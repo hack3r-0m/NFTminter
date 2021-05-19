@@ -5,14 +5,9 @@ import axios from "axios";
 import ErrorBox from "./UI/ErrorBox";
 
 // material ui
-import {
-  Button,
-  Container,
-  Grid,
-  CircularProgress,
-} from "@material-ui/core";
+import { Button, Container, Grid, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import CheckIcon from '@material-ui/icons/Check';
+import CheckIcon from "@material-ui/icons/Check";
 
 import {
   domainType,
@@ -45,6 +40,7 @@ const Form = ({
   const [surl, setSurl] = useState("");
   const [file, setFile] = useState(null);
   const [imgSrc, setImgSrc] = useState("");
+  const [imgLoading, setImgLoading] = useState(false);
   const [imgHash, setImgHash] = useState("");
   const [nftType, setNftType] = useState("ERC721");
   const [ercTwoNum, setErcTwoNum] = useState(1);
@@ -74,12 +70,13 @@ const Form = ({
   };
   // handle file upload
   const handleFile = async (e) => {
+    setImgLoading(true);
     // console.log("object")
     if (e.target.files[0]?.size < 1e7) {
       setFile(e.target.files[0]);
       const cid = await pinFileToIPFS(e.target.files[0]);
       toast("File uploaded to IPFS", { type: "success" });
-      console.log("IPFS imgHash", cid);
+      // console.log("IPFS imgHash", cid);
       setImgHash(cid);
       setErrors((pS) => ({ ...pS, file: "" }));
       // console.log(e.target.files[0]?.size < 1e7)
@@ -87,11 +84,13 @@ const Form = ({
         const reader = new FileReader();
         reader.onload = (e) => {
           setImgSrc(e.target.result);
+          setImgLoading(false);
         };
         reader.readAsDataURL(e.target.files[0]);
       }
     } else {
       setErrors((pS) => ({ ...pS, file: "File should be less than 10MB" }));
+      setImgLoading(false);
     }
   };
 
@@ -206,11 +205,11 @@ const Form = ({
                   //console.log(receipt)
                   console.log(
                     "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
-                    parseInt(receipt.events.Transfer.raw.topics[3])
+                      parseInt(receipt.events.Transfer.raw.topics[3])
                   );
                   setArkaneUrl(
                     "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
-                    parseInt(receipt.events.Transfer.raw.topics[3])
+                      parseInt(receipt.events.Transfer.raw.topics[3])
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
@@ -276,11 +275,11 @@ const Form = ({
                   //console.log(receipt)
                   console.log(
                     "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
-                    parseInt(receipt.events.TransferSingle.returnValues[3])
+                      parseInt(receipt.events.TransferSingle.returnValues[3])
                   );
                   setArkaneUrl(
                     "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
-                    parseInt(receipt.events.TransferSingle.returnValues[3])
+                      parseInt(receipt.events.TransferSingle.returnValues[3])
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
@@ -346,6 +345,9 @@ const Form = ({
                     </p>
                     {errors.file && <p className="imgErr">{errors.file}</p>}
                   </div>
+                  {imgLoading && (
+                    <CircularProgress className={classes.imgProgress} />
+                  )}
                   {imgSrc && (
                     <div className={classes.imgPreviewContainer}>
                       <img src={imgSrc} alt="preview-img" />
@@ -355,8 +357,8 @@ const Form = ({
                           {file.size > 100000
                             ? `${file.size / 100000} MB`
                             : file.size > 1000
-                              ? `${file.size / 1000} KB`
-                              : `${file.size} MB`}
+                            ? `${file.size / 1000} KB`
+                            : `${file.size} MB`}
                         </span>
                       </p>
                     </div>
@@ -468,7 +470,7 @@ const Form = ({
 
                 <Grid item xs={12}>
                   <div className={classes.flex}>
-                    <input 
+                    <input
                       type="checkbox"
                       checked={adult}
                       onChange={(e) => setAdult(e.target.checked)}
@@ -482,7 +484,7 @@ const Form = ({
                       htmlFor="adult-checkbox"
                     >
                       <div className="indicator">
-                        <CheckIcon className="icon"/>
+                        <CheckIcon className="icon" />
                       </div>
                       Content is 18+
                     </label>
@@ -497,10 +499,12 @@ const Form = ({
                 <Button
                   type="submit"
                   disabled={imgHash && !isLoading ? false : true}
-                  className={`${classes.btn} ${classes.filled} ${isLoading && classes.btnWithLoader}`}
+                  className={`${classes.btn} ${classes.filled} ${
+                    isLoading && classes.btnWithLoader
+                  }`}
                   style={{ marginBottom: "30px" }}
                 >
-                  {isLoading?"minting...":'Mint NFT'}
+                  {isLoading ? "minting..." : "Mint NFT"}
                   {isLoading && (
                     <CircularProgress
                       className={`${classes.loading}`}
@@ -624,8 +628,8 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       flexDirection: "column",
       margin: "0",
-      wordBreak: 'break-all',
-      lineHeight: 'normal',
+      wordBreak: "break-all",
+      lineHeight: "normal",
 
       "& span": {
         "&:first-child": {
@@ -701,18 +705,18 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "11px",
 
     "&:checked + label": {
-      backgroundColor: '#3E3B51',
-      color: 'white', 
-      borderColor: '#3E3B51',
+      backgroundColor: "#3E3B51",
+      color: "white",
+      borderColor: "#3E3B51",
 
       "& .indicator": {
         borderColor: "#3E3B51",
 
         "& .icon": {
-          color: '#1fb141',
-        }
-      }
-    }
+          color: "#1fb141",
+        },
+      },
+    },
   },
   labelSmall: {
     fontSize: "14px",
@@ -728,37 +732,43 @@ const useStyles = makeStyles((theme) => ({
   },
 
   customLabel: {
-    height: '42px', 
-    // borderRadius: '25px', 
-    borderRadius: '5px',
-    backgroundColor: 'white', 
-    border: '1px solid #C7CBD9',
-    display: 'flex', 
-    alignItems: 'center',
-    padding: '0 14px 0 10px',
-    fontSize: '14px', 
-    cursor: 'pointer',
-    color: '#000',
-    fontWeight: '600',
+    height: "42px",
+    // borderRadius: '25px',
+    borderRadius: "5px",
+    backgroundColor: "white",
+    border: "1px solid #C7CBD9",
+    display: "flex",
+    alignItems: "center",
+    padding: "0 14px 0 10px",
+    fontSize: "14px",
+    cursor: "pointer",
+    color: "#000",
+    fontWeight: "600",
 
     "&:hover": {
-      backgroundColor: '#F6F6FF',
-    }, 
+      backgroundColor: "#F6F6FF",
+    },
 
-    "& .indicator":{
-      width: '26px', 
-      height: '26px', 
-      borderRadius: '13px', 
-      border: '1px solid #C7CBD9',
-      marginRight: '10px', 
-      backgroundColor: '#fff',
-      display: 'flex',
+    "& .indicator": {
+      width: "26px",
+      height: "26px",
+      borderRadius: "13px",
+      border: "1px solid #C7CBD9",
+      marginRight: "10px",
+      backgroundColor: "#fff",
+      display: "flex",
 
-      "& .icon":{
-        color: 'transparent'
-      }
-    }
-  }
+      "& .icon": {
+        color: "transparent",
+      },
+    },
+  },
+
+  imgProgress: {
+    marginTop: "20px",
+    margin: "auto",
+    fontSize: "20px",
+  },
 }));
 
 export default Form;
