@@ -149,7 +149,7 @@ const ConnectWallet = ({
 }
 
 export const getSignatureParameters = signature => {
-  console.log(signature)
+  // console.log(signature)
   if (!Web3.utils.isHexStrict(signature)) {
     throw new Error(
       'Given value "'.concat(signature, '" is not a valid hex string.')

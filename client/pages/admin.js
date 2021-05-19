@@ -22,13 +22,13 @@ const Index = ({ signerAddress, web3Instance }) => {
     try {
       setLoading(true);
       const message = await axios.get(`/api/nonce?address=${signerAddress}`);
-      console.log("sign message", message.data);
+      // console.log("sign message", message.data);
 
       const provider = new ethers.providers.Web3Provider(web3Instance.currentProvider);
       const signer = provider.getSigner();
       const sign = await signer.signMessage(message.data);
 
-      console.log("sign hash", sign);
+      // console.log("sign hash", sign);
 
       const res = await axios(`/api/authenticate`, {
         method: "post",
@@ -58,7 +58,7 @@ const Index = ({ signerAddress, web3Instance }) => {
           token: token
         }
       });
-      console.log(data);
+      // console.log(data);
       setData(data);
       setLoading(false);
     } catch (e) {

@@ -75,9 +75,7 @@ const Form = ({
     if (e.target.files[0]?.size < 1e7) {
       try {
         setFile(e.target.files[0]);
-        console.log("Uploading file...");
         const cid = await pinFileToIPFS(e.target.files[0]);
-        console.log("Uploaded file...");
         toast("File uploaded to IPFS", { type: "success" });
         // console.log("IPFS imgHash", cid);
         setImgHash(cid);
@@ -121,7 +119,7 @@ const Form = ({
           external_url: surl,
         });
         toast("JSON data uploaded to IPFS", { type: "success" });
-        console.log(ipfsHash);
+        // console.log(ipfsHash);
       } catch (err) {
         console.log("Error Uploading files on IPFS", err);
         setErr("Uploading files on IPFS failed");
@@ -140,7 +138,7 @@ const Form = ({
             type: nftType,
             count: nftType === "ERC1155" ? ercTwoNum : 1,
           });
-          console.log(res);
+          // console.log(res);
           setIsLoading(false);
           setTrsHash("ok");
           setTriggerModal(true);

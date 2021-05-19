@@ -11,7 +11,7 @@ const Admin = ({ item, token, signerAddress }) => {
   const approve = async (e, _id) => {
     try {
       setLoading(true);
-      console.log("Approving id", _id)
+      // console.log("Approving id", _id)
       const res = await axios.post(`/api/approve`, {
         id: _id,
         withCredentials: true,
@@ -22,7 +22,7 @@ const Admin = ({ item, token, signerAddress }) => {
           token: token
         }
       });
-      console.log(res.data)
+      // console.log(res.data)
       setApproved(true);
       setLoading(false);
     } catch (e) {
@@ -44,7 +44,7 @@ const Admin = ({ item, token, signerAddress }) => {
           token: token
         }
       });
-      console.log(res.data)
+      // console.log(res.data)
       setDeclined(true);
       setLoading(false);
     } catch (e) {
