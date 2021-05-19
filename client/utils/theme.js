@@ -24,6 +24,7 @@ const theme = createMuiTheme({
           fontWeight: "500",
           width: "100%",
           color: "black",
+          fontFamily: ['"Nunito Sans"', "sans-serif"].join(","),
 
           "&:active": {
             border: "1.5px solid #7533E2",
