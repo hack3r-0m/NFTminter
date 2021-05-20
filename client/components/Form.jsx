@@ -504,7 +504,7 @@ const Form = ({
 
                 <Button
                   type="submit"
-                  disabled={imgHash && !isLoading ? false : true}
+                  disabled={signerAddress && imgHash && !isLoading ? false : true}
                   className={`${classes.btn} ${classes.filled} ${
                     isLoading && classes.btnWithLoader
                   }`}
