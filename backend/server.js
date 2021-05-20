@@ -118,7 +118,6 @@ app.post("/authenticate", async function (req, res) {
       sameSite: true,
       httpOnly: false,
     });
-    // res.sendStatus(200);
     res.send(token);
   } catch (e) {
     console.log(e);
@@ -171,7 +170,6 @@ app.post("/add", async function (req, res) {
 });
 
 app.post("/mint", async function (req, res) {
-  console.log("mint2", req.body);
   try {
     const { minter, uri, count, type } = req.body;
     let status;
@@ -224,8 +222,7 @@ app.post("/approve", auth, async function (req, res) {
       status = await ERC1155_v1.methods
         .mintTocaller(item.minter, item.count, encodedParams, item.uri)
         .send({ from: account.address, gas: 500000 });
-    const result = await collection.deleteOne({ _id: id });
-    console.log(status);
+    const result = await collection.deleteOne({ _id: ObjectId(id) });
     res.send(status);
   } catch (e) {
     console.log(e);
