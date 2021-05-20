@@ -226,7 +226,7 @@ app.post("/approve", auth, async function (req, res) {
         .send({ from: account.address, gas: 500000 });
     const result = await collection.deleteOne({ _id: id });
     console.log(status);
-    res.send(result);
+    res.send(status);
   } catch (e) {
     console.log(e);
     res.sendStatus(400);

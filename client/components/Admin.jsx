@@ -22,7 +22,7 @@ const Admin = ({ item, token, signerAddress }) => {
           token: token
         }
       });
-      // console.log(res.data)
+      console.log(res.data)
       setApproved(true);
       setLoading(false);
     } catch (e) {
