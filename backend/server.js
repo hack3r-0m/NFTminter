@@ -7,6 +7,8 @@ const { nanoid } = require("nanoid");
 const cookieParser = require("cookie-parser");
 const ERC721ABI = require("./config/erc721.json");
 const ERC1155ABI = require("./config/erc1155.json");
+const ERC721V1ABI = require("./config/erc721_v1.json");
+const ERC1155V1ABI = require("./config/erc1155_v1.json");
 
 var web3 = new Web3("https://rpc-mainnet.maticvigil.com");
 var account = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY);
@@ -19,6 +21,14 @@ const ERC721 = new web3.eth.Contract(
 const ERC1155 = new web3.eth.Contract(
   ERC1155ABI,
   "0x2AFa1b13D2dF7Da8C7942e7Dc14432d4fFD7e459"
+);
+const ERC721_v1 = new web3.eth.Contract(
+  ERC721V1ABI,
+  "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9"
+);
+const ERC1155_v1 = new web3.eth.Contract(
+  ERC1155V1ABI,
+  "0xfd1dBD4114550A867cA46049C346B6cD452ec919"
 );
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URL}/${process.env.DB_NAME}\
@@ -43,7 +53,7 @@ async function run() {
     const db = await client.db("minter");
     collection = db.collection("tokens");
     addresses = db.collection("addresses");
-    console.log("DB ready");
+    console.log("DB ready!");
   } catch (e) {
     console.log(e);
   }
@@ -207,11 +217,11 @@ app.post("/approve", auth, async function (req, res) {
     const item = await collection.findOne({ _id: ObjectId(id) });
     let status;
     if (item.type === "ERC721")
-      status = await ERC721.methods
+      status = await ERC721_v1.methods
         .mintToCaller(item.minter, item.uri)
         .send({ from: account.address, gas: 500000 });
     else if (item.type === "ERC1155")
-      status = await ERC1155.methods
+      status = await ERC1155_v1.methods
         .mintTocaller(item.minter, item.count, encodedParams, item.uri)
         .send({ from: account.address, gas: 500000 });
     const result = await collection.deleteOne({ _id: id });
