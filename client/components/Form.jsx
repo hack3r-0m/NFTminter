@@ -211,11 +211,11 @@ const Form = ({
                   //console.log(receipt)
                   console.log(
                     "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
-                    parseInt(receipt.events.Transfer.raw.topics[3])
+                      parseInt(receipt.events.Transfer.raw.topics[3])
                   );
                   setArkaneUrl(
                     "0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9/" +
-                    parseInt(receipt.events.Transfer.raw.topics[3])
+                      parseInt(receipt.events.Transfer.raw.topics[3])
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
@@ -281,11 +281,11 @@ const Form = ({
                   //console.log(receipt)
                   console.log(
                     "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
-                    parseInt(receipt.events.TransferSingle.returnValues[3])
+                      parseInt(receipt.events.TransferSingle.returnValues[3])
                   );
                   setArkaneUrl(
                     "0xfd1dBD4114550A867cA46049C346B6cD452ec919/" +
-                    parseInt(receipt.events.TransferSingle.returnValues[3])
+                      parseInt(receipt.events.TransferSingle.returnValues[3])
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
@@ -363,8 +363,8 @@ const Form = ({
                           {file.size > 100000
                             ? `${file.size / 100000} MB`
                             : file.size > 1000
-                              ? `${file.size / 1000} KB`
-                              : `${file.size} MB`}
+                            ? `${file.size / 1000} KB`
+                            : `${file.size} MB`}
                         </span>
                       </p>
                     </div>
@@ -505,11 +505,17 @@ const Form = ({
                 <Button
                   type="submit"
                   disabled={imgHash && !isLoading ? false : true}
-                  className={`${classes.btn} ${classes.filled} ${isLoading && classes.btnWithLoader
-                    }`}
+                  className={`${classes.btn} ${classes.filled} ${
+                    isLoading && classes.btnWithLoader
+                  }`}
                   style={{ marginBottom: "30px" }}
                 >
-                  {isLoading ? "minting..." : "Mint NFT"}
+                  {signerAddress
+                    ? isLoading
+                      ? "minting..."
+                      : "Mint NFT"
+                    : "Wallet not connected"}
+
                   {isLoading && (
                     <CircularProgress
                       className={`${classes.loading}`}
