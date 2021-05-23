@@ -47,10 +47,10 @@ const Navbar = ({
               className={classes.menuItemContainer}
               ref={menuItemContainerRef}
             >
-              {/* <a href="https://polygon-nft-bridge.netlify.app/" className="menuItem">
+              <a href="https://polygon-nft-bridge.netlify.app/" className="menuItem">
                 <BridgeIcon className="menuItemIcon active" />
                 Bridge
-              </a> */}
+              </a>
               <Link href="/" style={{ display: "flex" }}>
                 <a className={router.pathname == "/" ? "menuItem active" : "menuItem"}>
                   <MintIcon className="menuItemIcon" />
@@ -162,7 +162,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         borderColor: "#8247E5",
 
-        "& svg":{
+        "& svg": {
           fill: "#EDF0F7",
         }
       },
@@ -172,7 +172,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         borderColor: "#8247E5",
 
-        "& svg":{
+        "& svg": {
           fill: "#EDF0F7",
         }
       },
