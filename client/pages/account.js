@@ -17,30 +17,36 @@ const Account = ({ signerAddress }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const res = await fetch(`https://api.covalenthq.com/v1/137/address/${signerAddress}/balances_v2/?nft=true`,
+      setNftData([]);
+      let res = await fetch(`https://api.covalenthq.com/v1/137/address/${signerAddress}/balances_v2/?nft=true`,
         { 'stale-while-revalidate': 'max-age=604800' }
       );
-      const { data } = await res.json();
-      console.log(data);
+      res = await res.json();
+      const items = res.data.items;
+      console.log(items);
+      // filter useful info from api
       const nft = [];
-      if (data.items.length > 0) {
-        for (let i = 0; i < data.items.length; i++) {
-          const obj = {};
-          // console.log(data.items[i])
-          if (data.items[i].nft_data) {
-            obj.name = data.items[i].nft_data[0].external_data?.name;
-            obj.image = data.items[i].nft_data[0].external_data?.image;
-            obj.nftType = data.items[i].nft_data[0].supports_erc[1];
-            obj.quantity = data.items[i].nft_data[0]?.token_balance;
+      if (items.length > 0) {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].nft_data) {
+            for (let j = 0; j < items[i].nft_data.length; ++j) {
+              const obj = {};
+              obj.name = items[i].nft_data[j].external_data?.name;
+              obj.image = items[i].nft_data[j].external_data?.image;
+              obj.nftType = items[i].nft_data[j].supports_erc[1];
+              obj.quantity = items[i].nft_data[j]?.token_balance;
+              nft.push(obj);
+            }
           } else {
-            obj.name = data.items[i].contract_name;
-            obj.image = data.items[i].logo_url;
-            obj.nftType = data.items[i].contract_ticker_symbol;
+            const obj = {};
+            obj.name = items[i].contract_name;
+            obj.image = items[i].logo_url;
+            obj.nftType = items[i].contract_ticker_symbol;
+            nft.push(obj);
           }
-          nft.push(obj);
         }
       }
-      console.log(nft);
+      // console.log(nft);
       setNftData(nft);
       setIsLoading(false);
     }
@@ -72,16 +78,16 @@ const Account = ({ signerAddress }) => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  ...theme.overrides.mui, 
-  main:{
+  ...theme.overrides.mui,
+  main: {
     backgroundColor: 'white',
-    marginTop:'12px',
-    paddingBottom:'70px',
-    minHeight:'430px',
+    marginTop: '12px',
+    paddingBottom: '70px',
+    minHeight: '430px',
   },
   title: {
     fontWeight: "bold",
-    margin:'30px 0 10px',
+    margin: '30px 0 10px',
   },
 }));
 
