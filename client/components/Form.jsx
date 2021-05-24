@@ -50,7 +50,7 @@ const Form = ({
     name: "",
     desc: "",
     surl: "",
-    imgSrc: '',
+    imgSrc: "",
     imgHash: false,
     nftType: "ERC721",
     ercTwoNum: 1,
@@ -62,7 +62,7 @@ const Form = ({
   // reset form
   const resetForm = () => {
     setState(...initialState);
-  }
+  };
 
   // validate form
   const validateName = () => {
@@ -89,13 +89,16 @@ const Form = ({
         const cid = await pinFileToIPFS(e.target.files[0]);
         toast("File uploaded to IPFS", { type: "success" });
         // console.log("IPFS imgHash", cid);
-        setState({imgHash: cid});
+        setState((prevState) => ({ ...prevState, imgHash: cid }));
         setErrors((pS) => ({ ...pS, file: "" }));
         // console.log(e.target.files[0]?.size < 1e7)
         if (e.target.files.length !== 0) {
           const reader = new FileReader();
           reader.onload = (e) => {
-            setState({imgSrc: e.target.result})
+            setState((prevState) => ({
+              ...prevState,
+              imgSrc: e.target.result,
+            }));
             setImgLoading(false);
           };
           reader.readAsDataURL(e.target.files[0]);
@@ -397,7 +400,10 @@ const Form = ({
                       className={`${errors.name ? "inputErr" : ""}`}
                       value={name}
                       onChange={(e) => {
-                        setState({ name: e.target.value });
+                        setState((prevState) => ({
+                          ...prevState,
+                          name: e.target.value,
+                        }));
                         setErr("");
                         setErrors((pS) => ({ ...pS, name: "" }));
                       }}
@@ -422,7 +428,10 @@ const Form = ({
                       onChange={(e) => {
                         setErrors((pS) => ({ ...pS, desc: "" }));
                         setErr("");
-                        setState({ desc: e.target.value });
+                        setState((prevState) => ({
+                          ...prevState,
+                          desc: e.target.value,
+                        }));
                       }}
                       onBlur={validateDesc}
                       required
@@ -442,8 +451,14 @@ const Form = ({
                         className={classes.nftBtn}
                         disabled={nftType === "ERC721" ? true : false}
                         onClick={() => {
-                          setState({ ercTwoNum: 1 });
-                          setState({ nftType: "ERC721" });
+                          setState((prevState) => ({
+                            ...prevState,
+                            ercTwoNum: 1,
+                          }));
+                          setState((prevState) => ({
+                            ...prevState,
+                            nftType: "ERC721",
+                          }));
                         }}
                       >
                         ERC721
@@ -451,7 +466,12 @@ const Form = ({
                       <Button
                         className={classes.nftBtn}
                         disabled={nftType === "ERC1155" ? true : false}
-                        onClick={() => setState({ nftType: "ERC1155" })}
+                        onClick={() =>
+                          setState((prevState) => ({
+                            ...prevState,
+                            nftType: "ERC1155",
+                          }))
+                        }
                       >
                         ERC1155
                       </Button>
@@ -467,7 +487,10 @@ const Form = ({
                         disabled={nftType === "ERC1155" ? false : true}
                         value={ercTwoNum}
                         onChange={(e) =>
-                          setState({ ercTwoNum: e.target.value })
+                          setState((prevState) => ({
+                            ...prevState,
+                            ercTwoNum: e.target.value,
+                          }))
                         }
                         id="quantity"
                       />
@@ -485,7 +508,12 @@ const Form = ({
                       placeholder="https://twitter.com/example"
                       value={surl}
                       pattern="https?://.+"
-                      onChange={(e) => setState({ surl: e.target.value })}
+                      onChange={(e) =>
+                        setState((prevState) => ({
+                          ...prevState,
+                          surl: e.target.value,
+                        }))
+                      }
                       id="sm-url"
                     />
                   </div>
