@@ -35,15 +35,8 @@ const Form = ({
   const classes = useStyles();
 
   // hooks
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [surl, setSurl] = useState("");
   const [file, setFile] = useState(null);
-  const [imgSrc, setImgSrc] = useState("");
   const [imgLoading, setImgLoading] = useState(false);
-  const [imgHash, setImgHash] = useState(false);
-  const [nftType, setNftType] = useState("ERC721");
-  const [ercTwoNum, setErcTwoNum] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState("");
   const [errors, setErrors] = useState({
@@ -52,6 +45,24 @@ const Form = ({
     file: "",
   });
   const [adult, setAdult] = useState(false);
+
+  const initialState = {
+    name: "",
+    desc: "",
+    surl: "",
+    imgSrc: '',
+    imgHash: false,
+    nftType: "ERC721",
+    ercTwoNum: 1,
+  };
+
+  const [{ name, desc, surl, imgSrc, imgHash, nftType, ercTwoNum }, setState] =
+    useState(initialState);
+
+  // reset form
+  const resetForm = () => {
+    setState(...initialState);
+  }
 
   // validate form
   const validateName = () => {
@@ -78,20 +89,20 @@ const Form = ({
         const cid = await pinFileToIPFS(e.target.files[0]);
         toast("File uploaded to IPFS", { type: "success" });
         // console.log("IPFS imgHash", cid);
-        setImgHash(cid);
+        setState({imgHash: cid});
         setErrors((pS) => ({ ...pS, file: "" }));
         // console.log(e.target.files[0]?.size < 1e7)
         if (e.target.files.length !== 0) {
           const reader = new FileReader();
           reader.onload = (e) => {
-            setImgSrc(e.target.result);
+            setState({imgSrc: e.target.result})
             setImgLoading(false);
           };
           reader.readAsDataURL(e.target.files[0]);
         }
       } catch (e) {
         console.error(e);
-        setErrors((pS) => ({ ...pS, file: "Something went wrong..." }));
+        setErrors((pS) => ({ ...pS, file: e }));
         setImgLoading(false);
       }
     } else {
@@ -143,6 +154,7 @@ const Form = ({
           setTrsHash("ok");
           setTriggerModal(true);
           toast("NFT Added", { type: "success" });
+          resetForm;
         } else {
           const res = await axios.post(`/api/mint`, {
             minter: signerAddress,
@@ -156,6 +168,7 @@ const Form = ({
           setIsLoading(false);
           // setArkaneUrl("ok");
           toast("NFT Minted", { type: "success" });
+          resetForm;
         }
       }
       // If Arkane mint directly
@@ -219,6 +232,7 @@ const Form = ({
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
+                  resetForm;
                 })
                 .on("error", (error) => {
                   console.log(error);
@@ -289,6 +303,7 @@ const Form = ({
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
+                  resetForm();
                 })
                 .on("error", (error) => {
                   console.log(error);
@@ -382,7 +397,7 @@ const Form = ({
                       className={`${errors.name ? "inputErr" : ""}`}
                       value={name}
                       onChange={(e) => {
-                        setName(e.target.value);
+                        setState({ name: e.target.value });
                         setErr("");
                         setErrors((pS) => ({ ...pS, name: "" }));
                       }}
@@ -407,7 +422,7 @@ const Form = ({
                       onChange={(e) => {
                         setErrors((pS) => ({ ...pS, desc: "" }));
                         setErr("");
-                        setDesc(e.target.value);
+                        setState({ desc: e.target.value });
                       }}
                       onBlur={validateDesc}
                       required
@@ -427,8 +442,8 @@ const Form = ({
                         className={classes.nftBtn}
                         disabled={nftType === "ERC721" ? true : false}
                         onClick={() => {
-                          setErcTwoNum(1);
-                          setNftType("ERC721");
+                          setState({ ercTwoNum: 1 });
+                          setState({ nftType: "ERC721" });
                         }}
                       >
                         ERC721
@@ -436,7 +451,7 @@ const Form = ({
                       <Button
                         className={classes.nftBtn}
                         disabled={nftType === "ERC1155" ? true : false}
-                        onClick={() => setNftType("ERC1155")}
+                        onClick={() => setState({ nftType: "ERC1155" })}
                       >
                         ERC1155
                       </Button>
@@ -451,7 +466,9 @@ const Form = ({
                         placeholder="1"
                         disabled={nftType === "ERC1155" ? false : true}
                         value={ercTwoNum}
-                        onChange={(e) => setErcTwoNum(e.target.value)}
+                        onChange={(e) =>
+                          setState({ ercTwoNum: e.target.value })
+                        }
                         id="quantity"
                       />
                     </div>
@@ -468,7 +485,7 @@ const Form = ({
                       placeholder="https://twitter.com/example"
                       value={surl}
                       pattern="https?://.+"
-                      onChange={(e) => setSurl(e.target.value)}
+                      onChange={(e) => setState({ surl: e.target.value })}
                       id="sm-url"
                     />
                   </div>
@@ -499,7 +516,9 @@ const Form = ({
 
                 <p className={classes.note}>
                   Once your NFT is minted on the Polygon blockchain, you will
-                  not be able to edit or update any of its information.<br /><br />
+                  not be able to edit or update any of its information.
+                  <br />
+                  <br />
                   You agree that any information uploaded to the Polygon's NFT
                   Minter will not contain material subject to copyright or other
                   proprietary rights, unless you have necessary permission or
