@@ -499,12 +499,18 @@ const Form = ({
 
                 <p className={classes.note}>
                   Once your NFT is minted on the Polygon blockchain, you will
-                  not be able to edit or update any of its information.
+                  not be able to edit or update any of its information.<br /><br />
+                  You agree that any information uploaded to the Polygon's NFT
+                  Minter will not contain material subject to copyright or other
+                  proprietary rights, unless you have necessary permission or
+                  are otherwise legally entitled to post the material.
                 </p>
 
                 <Button
                   type="submit"
-                  disabled={signerAddress && imgHash && !isLoading ? false : true}
+                  disabled={
+                    signerAddress && imgHash && !isLoading ? false : true
+                  }
                   className={`${classes.btn} ${classes.filled} ${
                     isLoading && classes.btnWithLoader
                   }`}
