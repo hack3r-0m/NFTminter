@@ -19,7 +19,7 @@ const theme = createMuiTheme({
           backgroundColor: "#fff",
           border: "1px solid #C7CBD9",
           padding: "0 15px",
-          lineHeight: "50px",
+          // lineHeight: "50px",
           fontSize: "16px",
           fontWeight: "500",
           width: "100%",
@@ -41,9 +41,13 @@ const theme = createMuiTheme({
             position: "relative",
 
             "&~label": {
-              color:'gray',
+              color: "gray",
             },
           },
+        },
+
+        "& textarea": {
+          padding: "15px",
         },
         "& label": {
           fontSize: "14px",
@@ -155,7 +159,7 @@ const theme = createMuiTheme({
         fontWeight: "600",
         fontSize: "16px",
         position: "relative",
-        transition: 'all 0.3s ease',
+        transition: "all 0.3s ease",
 
         "&:first-child": {
           marginRight: "14px",
@@ -168,15 +172,15 @@ const theme = createMuiTheme({
         },
 
         "&:disabled": {
-          backgroundColor: '#bdc3c7',
-          borderColor: '#bdc3c7',
-          // opacity: 0.65, 
-          color: 'white',
-        }
+          backgroundColor: "#bdc3c7",
+          borderColor: "#bdc3c7",
+          // opacity: 0.65,
+          color: "white",
+        },
       },
       btnWithLoader: {
-        paddingLeft: '44px',
-        transition: 'all 0.3s ease',
+        paddingLeft: "44px",
+        transition: "all 0.3s ease",
       },
       filled: {
         backgroundColor: "#8247E5",
@@ -202,7 +206,7 @@ const theme = createMuiTheme({
         fontWeight: "500",
         fontSize: "16px",
         position: "relative",
-        cursor:'pointer',
+        cursor: "pointer",
 
         "&:first-child": {
           marginRight: "14px",
