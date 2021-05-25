@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import {
-  CircularProgress,
-  Container,
-  Grid,
-} from "@material-ui/core/";
+import { CircularProgress, Container, Grid, Modal } from "@material-ui/core/";
+import { Close } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 import NFTCard from "../components/UI/NFTCard";
@@ -13,13 +10,20 @@ const Account = ({ signerAddress }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [nftData, setNftData] = useState([]);
+  const [modalState, setModalState] = useState(false);
+  const [modalImgProps, setModalImgProps] = useState({});
+
+  const closeModal = () => {
+    setModalState(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       setNftData([]);
-      let res = await fetch(`https://api.covalenthq.com/v1/137/address/${signerAddress}/balances_v2/?nft=true`,
-        { 'stale-while-revalidate': 'max-age=604800' }
+      let res = await fetch(
+        `https://api.covalenthq.com/v1/137/address/${signerAddress}/balances_v2/?nft=true`,
+        { "stale-while-revalidate": "max-age=604800" }
       );
       res = await res.json();
       const items = res.data.items;
@@ -49,9 +53,9 @@ const Account = ({ signerAddress }) => {
       // console.log(nft);
       setNftData(nft);
       setIsLoading(false);
-    }
+    };
     if (signerAddress) fetchData();
-  }, [signerAddress])
+  }, [signerAddress]);
 
   return (
     <main className={classes.main}>
@@ -67,10 +71,31 @@ const Account = ({ signerAddress }) => {
                 name={nft.name}
                 type={nft.nftType}
                 quantity={nft.quantity}
+                setModalState={setModalState}
+                setModalImgProps={setModalImgProps}
               />
             </Grid>
           ))}
         </Grid>
+        {/* to view the image */}
+        <Modal
+          open={modalState}
+          className={`${classes.modalContainer} ${
+            modalImgProps.portrait? classes.portrait:''
+          }`}
+          onClose={closeModal}
+        >
+          <div className={`${classes.modal} modal`}>
+            <div className={classes.closeModal} onClick={closeModal}>
+              <Close style={{ fontSize: "16px" }} />
+            </div>
+            <img
+              src={modalImgProps.img}
+              alt="nft display"
+              className={classes.img}
+            />
+          </div>
+        </Modal>
         {isLoading && <CircularProgress color="secondary" />}
       </Container>
     </main>
@@ -79,16 +104,31 @@ const Account = ({ signerAddress }) => {
 
 const useStyles = makeStyles((theme) => ({
   ...theme.overrides.mui,
+  ...theme.overrides.modalStyle,
   main: {
-    backgroundColor: 'white',
-    marginTop: '12px',
-    paddingBottom: '70px',
-    minHeight: '430px',
+    backgroundColor: "white",
+    marginTop: "12px",
+    paddingBottom: "70px",
+    minHeight: "430px",
   },
   title: {
     fontWeight: "bold",
-    margin: '30px 0 10px',
+    margin: "30px 0 10px",
   },
+  img: {
+    borderRadius: "5px",
+  },
+  portrait: {
+    "& .modal": {
+      width:'auto', 
+      height: '90%',
+
+      "& img":{
+        width:'auto',
+        height: '100%',
+      }
+    }
+  }
 }));
 
 export default Account;

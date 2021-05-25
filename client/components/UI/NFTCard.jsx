@@ -1,15 +1,45 @@
+import { useRef, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-const NFTCard = ({ image, name, type, quantity }) => {
+const NFTCard = ({
+  image,
+  name,
+  type,
+  quantity,
+  setModalState,
+  setModalImgProps,
+}) => {
   const classes = useStyles();
+  const imgElement = useRef(null);
+  const [portrait, setportrait] = useState(false);
+
+  useEffect(() => {
+    // Checking the image orientation
+    const nWidth = imgElement.current.naturalWidth;
+    const nHeight = imgElement.current.naturalHeight;
+
+    if (nWidth/nHeight > 1) {
+      setportrait(false);
+    } else {
+      setportrait(true);
+    }
+  }, [image]);
+
   return (
-    <div className={classes.nftCard}>
+    <div
+      className={classes.nftCard}
+      onClick={() => {
+        setModalState(true);
+        setModalImgProps({ img: image, portrait: portrait });
+      }}
+    >
       <div className={classes.imageContainer}>
         <div className={classes.imgPlaceholder}></div>
         <img
           src={image || "images/placeholder.png"}
           className={classes.nftImg}
           alt="image"
+          ref={imgElement}
         />
       </div>
       <div className={classes.nftDetails}>
@@ -35,6 +65,12 @@ const useStyles = makeStyles((theme) => ({
     border: "0.5px solid #E8E8E8",
     height: "100%",
     boxShadow: "0px 2px 10px rgb(0 0 0 / 10%)",
+    cursor: "pointer",
+
+    "&:hover img":{
+      transform: 'scale(1.1)',
+      transition:'all 0.3s ease',
+    }
   },
   imageContainer: {
     position: "relative",
@@ -56,6 +92,8 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     left: 0,
     zIndex: 1,
+    transform: 'scale(1)',
+    transition:'all 0.3s ease',
   },
   nftDetails: {
     padding: "0 2px",

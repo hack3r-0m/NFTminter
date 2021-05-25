@@ -240,6 +240,11 @@ const theme = createMuiTheme({
         display: "flex",
         flexDirection: "column",
         position: "relative",
+        overflow:'hidden',
+
+        "@media (max-width:599px)": {
+          width: "100%",
+        },
       },
       graphicSection: {
         position: "relative",
