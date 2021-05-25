@@ -61,7 +61,7 @@ const Form = ({
 
   // reset form
   const resetForm = () => {
-    setState(...initialState);
+    setState({...initialState});
   };
 
   // validate form
