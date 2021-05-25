@@ -157,7 +157,7 @@ const Form = ({
           setTrsHash("ok");
           setTriggerModal(true);
           toast("NFT Added", { type: "success" });
-          resetForm;
+          resetForm();
         } else {
           const res = await axios.post(`/api/mint`, {
             minter: signerAddress,
@@ -171,7 +171,7 @@ const Form = ({
           setIsLoading(false);
           // setArkaneUrl("ok");
           toast("NFT Minted", { type: "success" });
-          resetForm;
+          resetForm();
         }
       }
       // If Arkane mint directly
@@ -235,7 +235,7 @@ const Form = ({
                   );
                   setTrsHash(receipt.transactionHash);
                   setTriggerModal(true);
-                  resetForm;
+                  resetForm();
                 })
                 .on("error", (error) => {
                   console.log(error);
