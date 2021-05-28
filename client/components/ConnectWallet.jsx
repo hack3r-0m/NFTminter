@@ -230,7 +230,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 5,
     height: "24px !important",
     width: "24px !important",
-    border: '2px solid',
 
     "&.green":{
       borderColor: 'green',
@@ -245,6 +244,7 @@ const useStyles = makeStyles((theme) => ({
       height: "36px !important",
       width: "36px !important",
       borderRadius: "20px",
+      border: '2px solid',
     },
   },
   logout: {

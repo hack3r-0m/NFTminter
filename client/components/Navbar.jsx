@@ -47,14 +47,16 @@ const Navbar = ({
               className={classes.menuItemContainer}
               ref={menuItemContainerRef}
             >
-              {/* <a href="https://polygon-nft-bridge.netlify.app/" className="menuItem">
-                <BridgeIcon className="menuItemIcon active" />
-                Bridge
-              </a> */}
               <Link href="/">
                 <a className={router.pathname == "/" ? "menuItem active" : "menuItem"}>
                   <MintIcon className="menuItemIcon" />
                   Minter
+                </a>
+              </Link>
+              <Link href="https://bridge.mintnft.today/">
+                <a className="menuItem">
+                  <BridgeIcon className="menuItemIcon active" />
+                  Bridge
                 </a>
               </Link>
               <Link href="/account">
