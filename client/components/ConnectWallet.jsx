@@ -76,7 +76,7 @@ const ConnectWallet = ({
       const externalProvider = await web3Modal.connect();
 
       const biconomy = new Biconomy(
-        new Web3.providers.HttpProvider("https://rpc-mainnet.maticvigil.com"),
+        new Web3.providers.HttpProvider("https://matic-mainnet-full-rpc.bwarelabs.com"),
         { apiKey: process.env.biconomy_api_key, debug: true }
       );
       setBiconomyProvider(new Web3(biconomy));
